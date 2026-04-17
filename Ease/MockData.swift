@@ -1,0 +1,141 @@
+import Foundation
+
+// MARK: - Enums
+
+enum MealType: String, CaseIterable, Hashable {
+    case breakfast = "早餐"
+    case brunch = "早午餐"
+    case lunch = "午餐"
+    case afternoonTea = "下午茶"
+    case dinner = "晚餐"
+    case lateNight = "宵夜"
+    case drink = "飲料"
+}
+
+enum FoodTag: String, CaseIterable, Hashable {
+    case rice = "飯"
+    case noodle = "麵"
+    case bread = "麵包"
+    case sweet = "甜食"
+    case coffee = "咖啡"
+    case bubbleTea = "手搖飲"
+    case carbonated = "碳酸"
+    case alcohol = "酒精"
+    case fried = "油炸"
+    case light = "清淡"
+    case spicy = "辣"
+}
+
+enum DiningType: String, CaseIterable, Hashable {
+    case eatOut = "外食"
+    case takeout = "外帶"
+    case homeCook = "自煮"
+}
+
+enum Symptom: String, CaseIterable, Hashable {
+    case bloating = "脹氣"
+    case burping = "打飽嗝"
+    case nausea = "想吐"
+    case acidReflux = "泛酸"
+    case vomiting = "嘔吐"
+    case other = "其他"
+
+    var emoji: String {
+        switch self {
+        case .bloating:   return "😖"
+        case .burping:    return "💨"
+        case .nausea:     return "🤢"
+        case .acidReflux: return "🔥"
+        case .vomiting:   return "🤮"
+        case .other:      return "😶"
+        }
+    }
+}
+
+// MARK: - Model
+
+struct MealRecord: Identifiable {
+    let id: UUID
+    let date: Date
+    let mealType: MealType
+    let foodTags: [FoodTag]
+    let note: String
+    let diningType: DiningType?
+    let symptoms: [Symptom]
+    let otherSymptom: String?
+    let additionalNote: String?
+
+    init(
+        id: UUID = UUID(),
+        date: Date,
+        mealType: MealType,
+        foodTags: [FoodTag] = [],
+        note: String = "",
+        diningType: DiningType? = nil,
+        symptoms: [Symptom] = [],
+        otherSymptom: String? = nil,
+        additionalNote: String? = nil
+    ) {
+        self.id = id
+        self.date = date
+        self.mealType = mealType
+        self.foodTags = foodTags
+        self.note = note
+        self.diningType = diningType
+        self.symptoms = symptoms
+        self.otherSymptom = otherSymptom
+        self.additionalNote = additionalNote
+    }
+
+    var hasSymptoms: Bool { !symptoms.isEmpty }
+
+    var symptomEmojis: String {
+        symptoms.prefix(3).map { $0.emoji }.joined(separator: " ")
+    }
+
+    var foodSummary: String {
+        var parts: [String] = []
+        if !foodTags.isEmpty {
+            parts.append(foodTags.prefix(3).map(\.rawValue).joined(separator: "、"))
+        }
+        if !note.isEmpty { parts.append(note) }
+        return parts.joined(separator: " · ")
+    }
+}
+
+// MARK: - Mock Data
+
+let mockRecords: [MealRecord] = {
+    let cal = Calendar.current
+    let now = Date()
+    func daysAgo(_ d: Int, hour: Int = 12) -> Date {
+        cal.date(bySettingHour: hour, minute: 0, second: 0, of:
+            cal.date(byAdding: .day, value: -d, to: now)!)!
+    }
+    return [
+        MealRecord(date: daysAgo(0, hour: 12), mealType: .lunch,
+                   foodTags: [.fried, .spicy], note: "炸雞、珍奶",
+                   diningType: .takeout, symptoms: [.bloating, .nausea],
+                   additionalNote: "吃很快"),
+        MealRecord(date: daysAgo(0, hour: 8), mealType: .breakfast,
+                   foodTags: [.bread, .coffee], note: "吐司、美式",
+                   diningType: .eatOut, symptoms: [.acidReflux]),
+        MealRecord(date: daysAgo(1, hour: 19), mealType: .dinner,
+                   foodTags: [.noodle, .spicy], note: "麻辣燙",
+                   diningType: .eatOut, symptoms: [.bloating, .vomiting, .nausea],
+                   additionalNote: "很辣很油"),
+        MealRecord(date: daysAgo(2, hour: 12), mealType: .lunch,
+                   foodTags: [.rice, .light], note: "清粥小菜",
+                   diningType: .homeCook, symptoms: []),
+        MealRecord(date: daysAgo(3, hour: 23), mealType: .lateNight,
+                   foodTags: [.carbonated, .fried], note: "泡麵、可樂",
+                   diningType: .takeout, symptoms: [.bloating, .burping],
+                   additionalNote: "太晚吃了"),
+        MealRecord(date: daysAgo(5, hour: 15), mealType: .afternoonTea,
+                   foodTags: [.bubbleTea, .sweet], note: "珍珠奶茶",
+                   diningType: .takeout, symptoms: [.acidReflux]),
+        MealRecord(date: daysAgo(7, hour: 18), mealType: .dinner,
+                   foodTags: [.rice, .light], note: "家常菜",
+                   diningType: .homeCook, symptoms: []),
+    ]
+}()
