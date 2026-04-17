@@ -18,7 +18,7 @@ struct ContentView: View {
                     Label("統計", systemImage: "chart.bar")
                 }
         }
-        .tint(.orange)
+        .tint(Color.easeAccent)
     }
 }
 

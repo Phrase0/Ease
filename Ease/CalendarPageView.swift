@@ -31,15 +31,22 @@ struct CalendarPageView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                monthHeader
-                weekdayHeader
-                daysGrid
-                Divider()
-                dayRecordsList
+            ZStack {
+                Color.easeBg.ignoresSafeArea()
+
+                VStack(spacing: 0) {
+                    monthHeader
+                        .padding(.top, 4)
+                    weekdayHeader
+                    daysGrid
+                    Divider().overlay(Color.easeDivider)
+                    dayRecordsList
+                }
             }
             .navigationTitle("日曆")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.easeBg, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
         }
     }
 
@@ -49,34 +56,36 @@ struct CalendarPageView: View {
         HStack {
             Button { changeMonth(by: -1) } label: {
                 Image(systemName: "chevron.left")
-                    .font(.title3)
-                    .padding(8)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Color.easeTextSecondary)
+                    .padding(10)
             }
             Spacer()
             Text(currentMonth, format: .dateTime.year().month(.wide))
-                .font(.title3.bold())
+                .font(.headline)
+                .foregroundStyle(Color.easeTextPrimary)
             Spacer()
             Button { changeMonth(by: 1) } label: {
                 Image(systemName: "chevron.right")
-                    .font(.title3)
-                    .padding(8)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Color.easeTextSecondary)
+                    .padding(10)
             }
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 8)
     }
 
     private var weekdayHeader: some View {
         LazyVGrid(columns: columns) {
             ForEach(weekdaySymbols, id: \.self) { symbol in
                 Text(symbol)
-                    .font(.caption.bold())
-                    .foregroundStyle(.secondary)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Color.easeTextSecondary)
                     .frame(maxWidth: .infinity)
             }
         }
         .padding(.horizontal, 8)
-        .padding(.bottom, 4)
+        .padding(.vertical, 6)
     }
 
     private var daysGrid: some View {
@@ -106,30 +115,48 @@ struct CalendarPageView: View {
         if let date = selectedDate {
             let records = recordsFor(date)
             VStack(alignment: .leading, spacing: 0) {
-                Text(date, format: .dateTime.month().day().weekday(.wide))
-                    .font(.subheadline.bold())
-                    .padding(.horizontal)
+                Text(date, format: .dateTime.month(.wide).day().weekday(.wide))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.easeTextPrimary)
+                    .padding(.horizontal, 16)
                     .padding(.vertical, 10)
 
                 if records.isEmpty {
-                    ContentUnavailableView("這天沒有紀錄", systemImage: "calendar.badge.exclamationmark")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    VStack(spacing: 8) {
+                        Text("🌿")
+                            .font(.largeTitle)
+                        Text("這天沒有紀錄")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.easeTextSecondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.top, 40)
                 } else {
                     List(records) { record in
                         NavigationLink(destination: RecordDetailView(record: record)) {
                             RecordRowView(record: record)
                         }
+                        .listRowBackground(Color.easeCard)
+                        .listRowSeparatorTint(Color.easeDivider)
                     }
                     .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
                 }
             }
+            Spacer()
         } else {
-            ContentUnavailableView("點選日期查看紀錄", systemImage: "hand.tap")
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            VStack(spacing: 8) {
+                Text("👆")
+                    .font(.largeTitle)
+                Text("點選日期查看紀錄")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.easeTextSecondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.top, 40)
+            Spacer()
         }
     }
-
-    // MARK: - Helpers
 
     private func changeMonth(by value: Int) {
         if let newMonth = calendar.date(byAdding: .month, value: value, to: currentMonth) {
@@ -149,25 +176,30 @@ struct DayCell: View {
     private let calendar = Calendar.current
 
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 3) {
             Text("\(calendar.component(.day, from: date))")
                 .font(.subheadline)
                 .frame(width: 34, height: 34)
                 .background(
                     Circle().fill(
-                        isSelected ? Color.orange :
-                        isToday ? Color.orange.opacity(0.2) :
+                        isSelected ? Color.easeAccent :
+                        isToday    ? Color.easeAccent.opacity(0.18) :
                         Color.clear
                     )
                 )
-                .foregroundStyle(isSelected ? .white : .primary)
+                .foregroundStyle(
+                    isSelected ? Color.white :
+                    isToday    ? Color.easeAccent :
+                    Color.easeTextPrimary
+                )
+                .fontWeight(isToday ? .semibold : .regular)
 
             Circle()
-                .fill(Color.red)
+                .fill(Color.easeSymptom)
                 .frame(width: 5, height: 5)
                 .opacity(hasSymptom ? 1 : 0)
         }
-        .frame(height: 48)
+        .frame(height: 50)
     }
 }
 

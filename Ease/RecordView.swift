@@ -27,91 +27,149 @@ struct RecordView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                // MARK: Date & Time
-                Section {
-                    DatePicker("日期與時間", selection: $date)
-                        .datePickerStyle(.compact)
-                }
+            ZStack {
+                Color.easeBg.ignoresSafeArea()
 
-                // MARK: Meal Type
-                Section("餐種") {
-                    Picker("選擇餐種", selection: $selectedMealType) {
-                        ForEach(MealType.allCases, id: \.self) { type in
-                            Text(type.rawValue).tag(type)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                }
+                ScrollView {
+                    VStack(spacing: 12) {
 
-                // MARK: Food Tags
-                Section("吃了什麼") {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 72))], alignment: .leading, spacing: 8) {
-                        ForEach(FoodTag.allCases, id: \.self) { tag in
-                            Button(tag.rawValue) {
-                                toggleFoodTag(tag)
+                        // MARK: Date & Time
+                        FormSection("日期與時間") {
+                            HStack {
+                                Image(systemName: "calendar")
+                                    .foregroundStyle(Color.easeAccent)
+                                    .frame(width: 20)
+                                DatePicker("", selection: $date, displayedComponents: .date)
+                                    .datePickerStyle(.compact)
+                                    .labelsHidden()
+                                    .tint(Color.easeAccent)
+                                Spacer()
                             }
-                            .buttonStyle(TagButtonStyle(isSelected: selectedFoodTags.contains(tag)))
-                        }
-                    }
-                    .padding(.vertical, 4)
 
-                    TextField("備註（例：咖啡、炸雞、泡麵）", text: $foodNote)
-                }
+                            Divider().overlay(Color.easeDivider)
 
-                // MARK: Dining Type
-                Section("用餐方式") {
-                    HStack(spacing: 8) {
-                        ForEach(DiningType.allCases, id: \.self) { type in
-                            let isSelected = selectedDiningType == type
-                            Button(type.rawValue) {
-                                selectedDiningType = isSelected ? nil : type
+                            HStack {
+                                Image(systemName: "clock")
+                                    .foregroundStyle(Color.easeAccent)
+                                    .frame(width: 20)
+                                DatePicker("", selection: $date, displayedComponents: .hourAndMinute)
+                                    .datePickerStyle(.compact)
+                                    .labelsHidden()
+                                    .tint(Color.easeAccent)
+                                Spacer()
                             }
-                            .buttonStyle(TagButtonStyle(isSelected: isSelected, selectedColor: .blue))
-                            .frame(maxWidth: .infinity)
                         }
-                    }
-                    .padding(.vertical, 4)
-                }
 
-                // MARK: Symptoms
-                Section("症狀") {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], alignment: .leading, spacing: 8) {
-                        ForEach(Symptom.allCases, id: \.self) { symptom in
-                            Button("\(symptom.emoji) \(symptom.rawValue)") {
-                                toggleSymptom(symptom)
+                        // MARK: Meal Type
+                        FormSection("餐種") {
+                            Picker("選擇餐種", selection: $selectedMealType) {
+                                ForEach(MealType.allCases, id: \.self) { type in
+                                    Text(type.rawValue).tag(type)
+                                }
                             }
-                            .buttonStyle(TagButtonStyle(isSelected: selectedSymptoms.contains(symptom), selectedColor: .red))
+                            .pickerStyle(.menu)
+                            .tint(Color.easeAccent)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                    }
-                    .padding(.vertical, 4)
 
-                    if selectedSymptoms.contains(.other) {
-                        TextField("描述其他症狀", text: $otherSymptomText)
-                    }
-                }
+                        // MARK: Food Tags
+                        FormSection("吃了什麼") {
+                            LazyVGrid(
+                                columns: [GridItem(.adaptive(minimum: 68), spacing: 8)],
+                                alignment: .leading,
+                                spacing: 8
+                            ) {
+                                ForEach(FoodTag.allCases, id: \.self) { tag in
+                                    Button(tag.rawValue) { toggleFoodTag(tag) }
+                                        .buttonStyle(TagButtonStyle(isSelected: selectedFoodTags.contains(tag)))
+                                }
+                            }
 
-                // MARK: Notes
-                Section("備註（選填）") {
-                    TextField("例：吃很快 / 很油 / 很晚吃", text: $additionalNote, axis: .vertical)
-                        .lineLimit(3...)
-                }
+                            Divider().overlay(Color.easeDivider).padding(.top, 4)
 
-                // MARK: Save
-                Section {
-                    Button(action: save) {
-                        Text("儲存")
-                            .frame(maxWidth: .infinity)
-                            .font(.headline)
+                            TextField("備註（例：咖啡、炸雞、泡麵）", text: $foodNote)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.easeTextPrimary)
+                                .tint(Color.easeAccent)
+                        }
+
+                        // MARK: Dining Type
+                        FormSection("用餐方式") {
+                            HStack(spacing: 8) {
+                                ForEach(DiningType.allCases, id: \.self) { type in
+                                    let isSelected = selectedDiningType == type
+                                    Button(type.rawValue) {
+                                        selectedDiningType = isSelected ? nil : type
+                                    }
+                                    .buttonStyle(TagButtonStyle(
+                                        isSelected: isSelected,
+                                        selectedColor: Color.easeNavy
+                                    ))
+                                    .frame(maxWidth: .infinity)
+                                }
+                            }
+                        }
+
+                        // MARK: Symptoms
+                        FormSection("症狀") {
+                            LazyVGrid(
+                                columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
+                                alignment: .leading,
+                                spacing: 8
+                            ) {
+                                ForEach(Symptom.allCases, id: \.self) { symptom in
+                                    Button("\(symptom.emoji) \(symptom.rawValue)") {
+                                        toggleSymptom(symptom)
+                                    }
+                                    .buttonStyle(TagButtonStyle(
+                                        isSelected: selectedSymptoms.contains(symptom),
+                                        selectedColor: Color.easeSymptom
+                                    ))
+                                }
+                            }
+
+                            if selectedSymptoms.contains(.other) {
+                                Divider().overlay(Color.easeDivider).padding(.top, 4)
+                                TextField("描述其他症狀", text: $otherSymptomText)
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.easeTextPrimary)
+                                    .tint(Color.easeAccent)
+                            }
+                        }
+
+                        // MARK: Additional Notes
+                        FormSection("備註（選填）") {
+                            TextField("例：吃很快 / 很油 / 很晚吃", text: $additionalNote, axis: .vertical)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.easeTextPrimary)
+                                .tint(Color.easeAccent)
+                                .lineLimit(3...)
+                        }
+
+                        // MARK: Save Button
+                        Button(action: save) {
+                            Text("儲存")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(Color.easeAccent)
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                        }
+                        .padding(.top, 4)
                     }
-                    .tint(.orange)
+                    .padding(16)
+                    .padding(.bottom, 32)
                 }
             }
             .navigationTitle(existingRecord == nil ? "新增紀錄" : "編輯紀錄")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.easeBg, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") { dismiss() }
+                        .foregroundStyle(Color.easeTextSecondary)
                 }
             }
         }
@@ -120,11 +178,8 @@ struct RecordView: View {
     // MARK: - Helpers
 
     private func toggleFoodTag(_ tag: FoodTag) {
-        if selectedFoodTags.contains(tag) {
-            selectedFoodTags.remove(tag)
-        } else {
-            selectedFoodTags.insert(tag)
-        }
+        if selectedFoodTags.contains(tag) { selectedFoodTags.remove(tag) }
+        else { selectedFoodTags.insert(tag) }
     }
 
     private func toggleSymptom(_ symptom: Symptom) {

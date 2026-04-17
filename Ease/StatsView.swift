@@ -2,9 +2,9 @@ import SwiftUI
 
 struct StatsView: View {
     enum TimeRange: String, CaseIterable {
-        case all = "全部"
+        case all   = "全部"
         case today = "今日"
-        case week = "最近7天"
+        case week  = "最近7天"
         case month = "最近30天"
     }
 
@@ -35,7 +35,6 @@ struct StatsView: View {
         filteredRecords.filter { $0.mealType == type }.count
     }
 
-    // Worst day: most records, ties broken by total symptom count
     var worstDay: (date: Date, records: Int, symptoms: Int)? {
         guard !filteredRecords.isEmpty else { return nil }
         let cal = Calendar.current
@@ -52,98 +51,127 @@ struct StatsView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+            ZStack {
+                Color.easeBg.ignoresSafeArea()
 
-                    // Time range picker
-                    Picker("時間範圍", selection: $selectedRange) {
-                        ForEach(TimeRange.allCases, id: \.self) { range in
-                            Text(range.rawValue).tag(range)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+
+                        // Time range picker
+                        Menu {
+                            ForEach(TimeRange.allCases, id: \.self) { range in
+                                Button(range.rawValue) { selectedRange = range }
+                            }
+                        } label: {
+                            HStack(spacing: 6) {
+                                Text(selectedRange.rawValue)
+                                    .font(.subheadline.weight(.medium))
+                                Image(systemName: "chevron.down")
+                                    .font(.caption.weight(.medium))
+                            }
+                            .foregroundStyle(Color.easeAccent)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .background(Color.easeAccent.opacity(0.1))
+                            .clipShape(Capsule())
                         }
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
 
-                    if filteredRecords.isEmpty {
-                        ContentUnavailableView("這段時間沒有紀錄", systemImage: "chart.bar")
+                        if filteredRecords.isEmpty {
+                            VStack(spacing: 8) {
+                                Text("🌿")
+                                    .font(.system(size: 44))
+                                Text("這段時間沒有紀錄")
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.easeTextSecondary)
+                            }
                             .frame(maxWidth: .infinity)
-                            .padding(.top, 40)
-                    } else {
-                        // Summary count
-                        Text("共 \(filteredRecords.count) 筆紀錄")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal)
+                            .padding(.top, 60)
+                        } else {
+                            Text("共 \(filteredRecords.count) 筆紀錄")
+                                .font(.caption)
+                                .foregroundStyle(Color.easeTextSecondary)
 
-                        // Symptom stats
-                        statsCard(title: "症狀統計", icon: "waveform.path.ecg") {
-                            ForEach(Symptom.allCases.filter { $0 != .other }, id: \.self) { symptom in
-                                StatRow(
-                                    label: "\(symptom.emoji) \(symptom.rawValue)",
-                                    count: symptomCount(symptom),
-                                    total: filteredRecords.count
-                                )
-                            }
-                        }
-
-                        // Meal type stats
-                        statsCard(title: "餐種分析", icon: "fork.knife") {
-                            ForEach(MealType.allCases, id: \.self) { type in
-                                let count = mealTypeCount(type)
-                                if count > 0 {
-                                    StatRow(label: "🍽 \(type.rawValue)", count: count, total: filteredRecords.count)
+                            // Symptom stats
+                            statsCard("症狀統計") {
+                                ForEach(Symptom.allCases.filter { $0 != .other }, id: \.self) { symptom in
+                                    StatRow(
+                                        label: "\(symptom.emoji) \(symptom.rawValue)",
+                                        count: symptomCount(symptom),
+                                        total: filteredRecords.count
+                                    )
                                 }
                             }
-                        }
 
-                        // Worst day
-                        if let worst = worstDay {
-                            VStack(alignment: .leading, spacing: 12) {
-                                Label("最嚴重的一天", systemImage: "exclamationmark.circle")
-                                    .font(.headline)
-                                    .padding(.horizontal)
-
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        Text(worst.date, format: .dateTime.month().day().weekday(.wide))
-                                            .font(.title3.bold())
-                                        HStack(spacing: 12) {
-                                            Label("\(worst.records) 筆紀錄", systemImage: "note.text")
-                                            Label("\(worst.symptoms) 次症狀", systemImage: "waveform.path.ecg")
-                                        }
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                            // Meal type stats
+                            let activeMealTypes = MealType.allCases.filter { mealTypeCount($0) > 0 }
+                            if !activeMealTypes.isEmpty {
+                                statsCard("餐種分析") {
+                                    ForEach(activeMealTypes, id: \.self) { type in
+                                        StatRow(
+                                            label: "🍽 \(type.rawValue)",
+                                            count: mealTypeCount(type),
+                                            total: filteredRecords.count
+                                        )
                                     }
-                                    Spacer()
-                                    Text("😖")
-                                        .font(.system(size: 44))
                                 }
-                                .padding()
-                                .background(Color.red.opacity(0.08))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .padding(.horizontal)
+                            }
+
+                            // Worst day
+                            if let worst = worstDay {
+                                VStack(alignment: .leading, spacing: 10) {
+                                    Text("最嚴重的一天")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(Color.easeTextSecondary)
+                                        .tracking(0.8)
+
+                                    HStack(alignment: .center) {
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            Text(worst.date, format: .dateTime.month(.wide).day().weekday(.wide))
+                                                .font(.title3.weight(.semibold))
+                                                .foregroundStyle(Color.easeTextPrimary)
+                                            HStack(spacing: 12) {
+                                                Label("\(worst.records) 筆", systemImage: "note.text")
+                                                Label("\(worst.symptoms) 次症狀", systemImage: "waveform.path.ecg")
+                                            }
+                                            .font(.caption)
+                                            .foregroundStyle(Color.easeTextSecondary)
+                                        }
+                                        Spacer()
+                                        Text("😖")
+                                            .font(.system(size: 40))
+                                    }
+                                    .padding(16)
+                                    .background(Color.easeSymptom.opacity(0.08))
+                                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                                }
                             }
                         }
                     }
+                    .padding(16)
+                    .padding(.bottom, 32)
                 }
-                .padding(.vertical)
             }
             .navigationTitle("統計")
+            .toolbarBackground(Color.easeBg, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
         }
     }
 
     @ViewBuilder
-    private func statsCard<Content: View>(title: String, icon: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label(title, systemImage: icon)
-                .font(.headline)
-                .padding(.horizontal)
+    private func statsCard<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.easeTextSecondary)
+                .tracking(0.8)
+                .padding(.bottom, 12)
 
-            VStack(spacing: 0) {
-                content()
-            }
-            .padding(.horizontal)
+            content()
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(Color.easeCard)
+        .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 }
 
@@ -155,7 +183,8 @@ struct StatRow: View {
     let total: Int
 
     var ratio: Double {
-        total > 0 ? Double(count) / Double(total) : 0
+        guard total > 0 else { return 0 }
+        return min(Double(count) / Double(total), 1.0)
     }
 
     var body: some View {
@@ -163,22 +192,26 @@ struct StatRow: View {
             HStack {
                 Text(label)
                     .font(.subheadline)
+                    .foregroundStyle(Color.easeTextPrimary)
                 Spacer()
                 Text("\(count) 次")
-                    .font(.subheadline.bold())
-                    .foregroundStyle(count > 0 ? .primary : .secondary)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(count > 0 ? Color.easeAccent : Color.easeTextSecondary)
             }
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color(.systemGray5)).frame(height: 6)
-                    Capsule().fill(Color.orange).frame(width: geo.size.width * ratio, height: 6)
+                    Capsule()
+                        .fill(Color.easeDivider)
+                        .frame(height: 5)
+                    Capsule()
+                        .fill(Color.easeAccent)
+                        .frame(width: geo.size.width * ratio, height: 5)
                 }
             }
-            .frame(height: 6)
+            .frame(height: 5)
         }
-        .padding(.vertical, 8)
-        Divider()
+        .padding(.vertical, 7)
     }
 }
 

@@ -14,21 +14,48 @@ struct HistoryListView: View {
         }
     }
 
+    var groupedRecords: [(Date, [MealRecord])] {
+        let cal = Calendar.current
+        let grouped = Dictionary(grouping: filteredRecords) {
+            cal.startOfDay(for: $0.date)
+        }
+        return grouped.sorted { $0.key > $1.key }
+    }
+
     var body: some View {
         NavigationStack {
-            List(filteredRecords) { record in
-                NavigationLink(destination: RecordDetailView(record: record)) {
-                    RecordRowView(record: record)
+            List {
+                ForEach(groupedRecords, id: \.0) { date, records in
+                    Section {
+                        ForEach(records) { record in
+                            NavigationLink(destination: RecordDetailView(record: record)) {
+                                RecordRowView(record: record)
+                            }
+                            .listRowBackground(Color.easeCard)
+                            .listRowSeparatorTint(Color.easeDivider)
+                        }
+                    } header: {
+                        Text(date, format: .dateTime.month(.wide).day().weekday(.abbreviated))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.easeTextSecondary)
+                            .textCase(nil)
+                    }
                 }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(Color.easeBg)
             .searchable(text: $searchText, prompt: "搜尋")
             .navigationTitle("紀錄")
+            .toolbarBackground(Color.easeBg, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showingNewRecord = true
                     } label: {
                         Image(systemName: "plus")
+                            .foregroundStyle(Color.easeAccent)
                     }
                 }
             }
@@ -46,117 +73,131 @@ struct RecordDetailView: View {
     @State private var isEditing = false
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+        ZStack {
+            Color.easeBg.ignoresSafeArea()
 
-                // Date / Meal type header
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(record.date, style: .date)
-                            .font(.headline)
-                        Text(record.date, style: .time)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+
+                    // Header: date, time, meal type
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(record.date, style: .date)
+                                .font(.title3.weight(.semibold))
+                                .foregroundStyle(Color.easeTextPrimary)
+                            Text(record.date, style: .time)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.easeTextSecondary)
+                        }
+                        Spacer()
+                        Text(record.mealType.rawValue)
+                            .font(.subheadline.weight(.medium))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.easeAccent.opacity(0.12))
+                            .foregroundStyle(Color.easeAccent)
+                            .clipShape(Capsule())
                     }
-                    Spacer()
-                    Text(record.mealType.rawValue)
-                        .font(.subheadline.bold())
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.orange.opacity(0.15))
-                        .foregroundStyle(Color.orange)
-                        .clipShape(Capsule())
-                }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+                    .background(Color.easeCard)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
 
-                Divider()
+                    // Food
+                    if !record.foodTags.isEmpty || !record.note.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("吃了什麼")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.easeTextSecondary)
+                                .tracking(0.8)
 
-                // Food
-                if !record.foodTags.isEmpty || !record.note.isEmpty {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Label("吃了什麼", systemImage: "fork.knife")
-                            .font(.headline)
-
-                        if !record.foodTags.isEmpty {
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 6) {
-                                    ForEach(record.foodTags, id: \.self) { tag in
-                                        Text(tag.rawValue)
-                                            .font(.caption)
-                                            .padding(.horizontal, 10)
-                                            .padding(.vertical, 5)
-                                            .background(Color.orange.opacity(0.12))
-                                            .foregroundStyle(Color.orange)
-                                            .clipShape(Capsule())
-                                    }
-                                }
+                            if !record.foodTags.isEmpty {
+                                TagPillRow(
+                                    tags: record.foodTags.map(\.rawValue),
+                                    foreground: Color.easeAccent,
+                                    background: Color.easeAccent.opacity(0.1)
+                                )
                             }
-                        }
 
-                        if !record.note.isEmpty {
-                            Text(record.note)
-                                .font(.body)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
+                            if !record.note.isEmpty {
+                                Text(record.note)
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.easeTextSecondary)
+                            }
 
-                // Dining type
-                if let diningType = record.diningType {
-                    Label(diningType.rawValue, systemImage: "bag")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-
-                Divider()
-
-                // Symptoms
-                VStack(alignment: .leading, spacing: 10) {
-                    Label("症狀", systemImage: "waveform.path.ecg")
-                        .font(.headline)
-
-                    if record.symptoms.isEmpty {
-                        Text("無症狀 ✅")
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 6) {
-                                ForEach(record.symptoms, id: \.self) { symptom in
-                                    Text("\(symptom.emoji) \(symptom.rawValue)")
+                            if let diningType = record.diningType {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "bag")
                                         .font(.caption)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 5)
-                                        .background(Color.red.opacity(0.1))
-                                        .foregroundStyle(Color.red)
-                                        .clipShape(Capsule())
+                                    Text(diningType.rawValue)
+                                        .font(.caption)
                                 }
+                                .foregroundStyle(Color.easeTextSecondary)
                             }
                         }
-                        if let other = record.otherSymptom, !other.isEmpty {
-                            Text("其他：\(other)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(16)
+                        .background(Color.easeCard)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+
+                    // Symptoms
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("症狀")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.easeTextSecondary)
+                            .tracking(0.8)
+
+                        if record.symptoms.isEmpty {
+                            Text("無症狀")
+                                .font(.subheadline)
+                                .foregroundStyle(Color.easeTextSecondary.opacity(0.6))
+                        } else {
+                            TagPillRow(
+                                tags: record.symptoms.map { "\($0.emoji) \($0.rawValue)" },
+                                foreground: Color.easeSymptom,
+                                background: Color.easeSymptom.opacity(0.1)
+                            )
+                            if let other = record.otherSymptom, !other.isEmpty {
+                                Text("其他：\(other)")
+                                    .font(.caption)
+                                    .foregroundStyle(Color.easeTextSecondary)
+                            }
                         }
                     }
-                }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+                    .background(Color.easeCard)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
 
-                // Additional notes
-                if let note = record.additionalNote, !note.isEmpty {
-                    Divider()
-                    VStack(alignment: .leading, spacing: 8) {
-                        Label("備註", systemImage: "note.text")
-                            .font(.headline)
-                        Text(note)
-                            .font(.body)
+                    // Additional notes
+                    if let note = record.additionalNote, !note.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("備註")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.easeTextSecondary)
+                                .tracking(0.8)
+                            Text(note)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.easeTextPrimary)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(16)
+                        .background(Color.easeCard)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
                 }
+                .padding(16)
             }
-            .padding()
         }
         .navigationTitle("詳細紀錄")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.easeBg, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("編輯") { isEditing = true }
+                    .foregroundStyle(Color.easeAccent)
             }
         }
         .sheet(isPresented: $isEditing) {
