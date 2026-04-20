@@ -18,10 +18,11 @@ struct CalendarPageView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 monthHeader.padding(.top, 4)
-                weekdayHeader
+                weekdayHeader.padding(.top, 4)
                 daysGrid
                 Divider().overlay(Color.easeDivider)
                 dayRecordsList
+                    .frame(maxHeight: .infinity)
             }
             .background(Color.easeBg.ignoresSafeArea())
             .navigationTitle("日曆")
@@ -100,56 +101,38 @@ struct CalendarPageView: View {
     private var dayRecordsList: some View {
         if let date = viewModel.selectedDate {
             let records = viewModel.recordsFor(date, in: store.records)
-            VStack(alignment: .leading, spacing: 0) {
-                Text(date, format: .dateTime.month(.wide).day().weekday(.wide))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.easeTextPrimary)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
-
-                if records.isEmpty {
-                    VStack(spacing: 8) {
-                        Text("🌿").font(.largeTitle)
-                        Text("這天沒有紀錄")
-                            .font(.subheadline)
-                            .foregroundStyle(Color.easeTextSecondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 32)
-                } else {
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            ForEach(Array(records.enumerated()), id: \.element.id) { index, record in
-                                NavigationLink {
-                                    RecordDetailView(record: record)
-                                } label: {
-                                    HStack(spacing: 0) {
-                                        RecordRowView(record: record)
-                                        Image(systemName: "chevron.right")
-                                            .font(.caption.weight(.semibold))
-                                            .foregroundStyle(Color.easeTextSecondary.opacity(0.4))
-                                    }
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 2)
-                                }
-                                .buttonStyle(.plain)
-
-                                if index < records.count - 1 {
-                                    Divider()
-                                        .overlay(Color.easeDivider)
-                                        .padding(.leading, 16)
-                                }
+            if records.isEmpty {
+                VStack(spacing: 8) {
+                    Text("🌿").font(.largeTitle)
+                    Text("這天沒有紀錄")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.easeTextSecondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.top, 32)
+            } else {
+                List {
+                    Section {
+                        ForEach(records) { record in
+                            NavigationLink {
+                                RecordDetailView(record: record)
+                            } label: {
+                                RecordRowView(record: record)
                             }
+                            .listRowBackground(Color.easeCard)
+                            .listRowSeparatorTint(Color.easeDivider)
                         }
-                        .background(Color.easeCard)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 16)
+                    } header: {
+                        Text(date, format: .dateTime.month(.wide).day().weekday(.wide))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.easeTextSecondary)
+                            .textCase(nil)
                     }
                 }
+                .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden)
+                .background(Color.easeBg)
             }
-            Spacer()
         } else {
             VStack(spacing: 8) {
                 Text("👆").font(.largeTitle)
@@ -159,7 +142,6 @@ struct CalendarPageView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.top, 40)
-            Spacer()
         }
     }
 }
