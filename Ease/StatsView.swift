@@ -19,6 +19,7 @@ struct StatsView: View {
     @State private var selectedRange: TimeRange = .week
     @State private var customStart: Date = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
     @State private var customEnd: Date = Date()
+    @State private var worstDaySheet: WorstDayItem? = nil
 
     var filteredRecords: [MealRecord] {
         let now = Date()
@@ -221,31 +222,40 @@ struct StatsView: View {
 
                             // Worst day
                             if let worst = worstDay {
+                                let dayRecords = filteredRecords.filter {
+                                    Calendar.current.isDate($0.date, inSameDayAs: worst.date)
+                                }.sorted { $0.date < $1.date }
+
                                 VStack(alignment: .leading, spacing: 10) {
                                     Text("最嚴重的一天")
                                         .font(.caption.weight(.semibold))
                                         .foregroundStyle(Color.easeTextSecondary)
                                         .tracking(0.8)
 
-                                    HStack(alignment: .center) {
-                                        VStack(alignment: .leading, spacing: 6) {
-                                            Text(worst.date, format: .dateTime.month(.wide).day().weekday(.wide))
-                                                .font(.title3.weight(.semibold))
-                                                .foregroundStyle(Color.easeTextPrimary)
-                                            HStack(spacing: 12) {
-                                                Label("\(worst.records) 筆", systemImage: "note.text")
-                                                Label("嚴重度 \(worst.symptomScore)", systemImage: "waveform.path.ecg")
+                                    Button {
+                                        worstDaySheet = WorstDayItem(date: worst.date, records: dayRecords)
+                                    } label: {
+                                        HStack(alignment: .center) {
+                                            VStack(alignment: .leading, spacing: 6) {
+                                                Text(worst.date, format: .dateTime.month(.wide).day().weekday(.wide))
+                                                    .font(.title3.weight(.semibold))
+                                                    .foregroundStyle(Color.easeTextPrimary)
+                                                HStack(spacing: 12) {
+                                                    Label("\(worst.records) 筆", systemImage: "note.text")
+                                                    Label("嚴重度 \(worst.symptomScore)", systemImage: "waveform.path.ecg")
+                                                }
+                                                .font(.caption)
+                                                .foregroundStyle(Color.easeTextSecondary)
                                             }
-                                            .font(.caption)
-                                            .foregroundStyle(Color.easeTextSecondary)
+                                            Spacer()
+                                            Text("😖")
+                                                .font(.system(size: 40))
                                         }
-                                        Spacer()
-                                        Text("😖")
-                                            .font(.system(size: 40))
+                                        .padding(16)
+                                        .background(Color.easeSymptom.opacity(0.08))
+                                        .clipShape(RoundedRectangle(cornerRadius: 14))
                                     }
-                                    .padding(16)
-                                    .background(Color.easeSymptom.opacity(0.08))
-                                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                                    .buttonStyle(.plain)
                                 }
                             }
                         }
@@ -258,6 +268,9 @@ struct StatsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.easeBg, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .sheet(item: $worstDaySheet) { item in
+                WorstDayDetailView(date: item.date, records: item.records)
+            }
         }
     }
 
@@ -317,6 +330,14 @@ struct StatRow: View {
         }
         .padding(.vertical, 7)
     }
+}
+
+// MARK: - Worst Day Sheet Helper
+
+struct WorstDayItem: Identifiable {
+    let id = UUID()
+    let date: Date
+    let records: [MealRecord]
 }
 
 #Preview {
