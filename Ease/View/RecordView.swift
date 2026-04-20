@@ -93,7 +93,7 @@ struct RecordView: View {
                                 }
                                 .buttonStyle(TagButtonStyle(
                                     isSelected: isSelected,
-                                    selectedColor: Color.easeNavy
+                                    selectedColor: Color.easeAccent
                                 ))
                                 .frame(maxWidth: .infinity)
                             }
@@ -127,7 +127,7 @@ struct RecordView: View {
                                 }
                                 .buttonStyle(TagButtonStyle(
                                     isSelected: viewModel.selectedSymptoms.contains(symptom),
-                                    selectedColor: Color.easeSymptom
+                                    selectedColor: Color.easeAccent
                                 ))
                             }
                         }

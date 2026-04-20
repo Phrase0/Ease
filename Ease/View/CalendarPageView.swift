@@ -55,7 +55,7 @@ struct CalendarPageView: View {
                     .padding(10)
             }
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 16)
     }
 
     private var weekdayHeader: some View {
@@ -67,12 +67,13 @@ struct CalendarPageView: View {
                     .frame(maxWidth: .infinity)
             }
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 4)
     }
 
     private var daysGrid: some View {
-        LazyVGrid(columns: columns, spacing: 4) {
+        LazyVGrid(columns: columns, spacing: 2) {
             ForEach(0..<viewModel.daysInMonth.count, id: \.self) { index in
                 if let date = viewModel.daysInMonth[index] {
                     DayCell(
@@ -87,11 +88,11 @@ struct CalendarPageView: View {
                         viewModel.selectedDate = Calendar.current.startOfDay(for: date)
                     }
                 } else {
-                    Color.clear.frame(height: 48)
+                    Color.clear.frame(height: 40)
                 }
             }
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 16)
         .padding(.bottom, 8)
     }
 
@@ -104,7 +105,8 @@ struct CalendarPageView: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Color.easeTextPrimary)
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
 
                 if records.isEmpty {
                     VStack(spacing: 8) {
@@ -113,20 +115,38 @@ struct CalendarPageView: View {
                             .font(.subheadline)
                             .foregroundStyle(Color.easeTextSecondary)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(.top, 40)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 32)
                 } else {
-                    List(records) { record in
-                        NavigationLink {
-                            RecordDetailView(record: record)
-                        } label: {
-                            RecordRowView(record: record)
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ForEach(Array(records.enumerated()), id: \.element.id) { index, record in
+                                NavigationLink {
+                                    RecordDetailView(record: record)
+                                } label: {
+                                    HStack(spacing: 0) {
+                                        RecordRowView(record: record)
+                                        Image(systemName: "chevron.right")
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(Color.easeTextSecondary.opacity(0.4))
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 2)
+                                }
+                                .buttonStyle(.plain)
+
+                                if index < records.count - 1 {
+                                    Divider()
+                                        .overlay(Color.easeDivider)
+                                        .padding(.leading, 16)
+                                }
+                            }
                         }
-                        .listRowBackground(Color.easeCard)
-                        .listRowSeparatorTint(Color.easeDivider)
+                        .background(Color.easeCard)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 16)
                     }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
                 }
             }
             Spacer()
@@ -155,10 +175,10 @@ struct DayCell: View {
     private let calendar = Calendar.current
 
     var body: some View {
-        VStack(spacing: 3) {
+        VStack(spacing: 2) {
             Text("\(calendar.component(.day, from: date))")
-                .font(.subheadline)
-                .frame(width: 34, height: 34)
+                .font(.caption)
+                .frame(width: 28, height: 28)
                 .background(
                     Circle().fill(
                         isSelected ? Color.easeAccent :
@@ -175,10 +195,10 @@ struct DayCell: View {
 
             Circle()
                 .fill(Color.easeSymptom)
-                .frame(width: 5, height: 5)
+                .frame(width: 4, height: 4)
                 .opacity(hasSymptom ? 1 : 0)
         }
-        .frame(height: 50)
+        .frame(height: 40)
     }
 }
 

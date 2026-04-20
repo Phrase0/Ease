@@ -10,15 +10,15 @@ import SwiftUI
 // MARK: - Color Tokens
 
 extension Color {
-    static let easeBg            = Color(red: 0.953, green: 0.937, blue: 0.914) // warm cream
-    static let easeCard          = Color(red: 0.984, green: 0.973, blue: 0.959) // lighter warm white
-    static let easeAccent        = Color(red: 0.808, green: 0.478, blue: 0.227) // terracotta
-    static let easeNavy          = Color(red: 0.216, green: 0.282, blue: 0.369) // dusty navy
-    static let easeSage          = Color(red: 0.482, green: 0.608, blue: 0.478) // sage
-    static let easeTextPrimary   = Color(red: 0.192, green: 0.157, blue: 0.125) // warm dark brown
-    static let easeTextSecondary = Color(red: 0.510, green: 0.459, blue: 0.408) // medium warm brown
-    static let easeSymptom       = Color(red: 0.643, green: 0.349, blue: 0.314) // dusty terracotta-rose
-    static let easeDivider       = Color(red: 0.871, green: 0.847, blue: 0.816) // warm divider
+    static let easeBg            = Color(red: 0.953, green: 0.937, blue: 0.914) // warm cream 溫暖的米色背景
+    static let easeCard          = Color(red: 0.984, green: 0.973, blue: 0.959) // lighter warm white 較淺的暖白色（卡片用）
+    static let easeAccent        = Color(red: 0.808, green: 0.478, blue: 0.227) // terracotta 陶土色（重點色）
+    static let easeNavy          = Color(red: 0.216, green: 0.282, blue: 0.369) // dusty navy 柔和的深藍色
+    static let easeSage          = Color(red: 0.482, green: 0.608, blue: 0.478) // sage 鼠尾草綠
+    static let easeTextPrimary   = Color(red: 0.192, green: 0.157, blue: 0.125) // warm dark brown 主要文字（暖深棕）
+    static let easeTextSecondary = Color(red: 0.510, green: 0.459, blue: 0.408) // medium warm brown 次要文字（中等暖棕）
+    static let easeSymptom       = Color(red: 0.643, green: 0.349, blue: 0.314) // dusty terracotta-rose 症狀色（帶灰的陶土玫瑰色）
+    static let easeDivider       = Color(red: 0.871, green: 0.847, blue: 0.816) // warm divider 分隔線（暖灰色）
 }
 
 // MARK: - Tag Button Style
@@ -30,9 +30,10 @@ struct TagButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.subheadline)
+            .lineLimit(1)
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
-            .background(isSelected ? selectedColor : Color.easeCard)
+            .background(isSelected ? selectedColor : Color.easeBg)
             .foregroundStyle(isSelected ? Color.white : Color.easeTextSecondary)
             .overlay(
                 Capsule()
@@ -106,7 +107,8 @@ struct RecordRowView: View {
             Text(record.displayTime)
                 .font(.caption.monospacedDigit())
                 .foregroundStyle(Color.easeTextSecondary)
-                .frame(width: 46, alignment: .leading)
+                .lineLimit(1)
+                .frame(width: 40, alignment: .leading)
                 .padding(.top, 2)
 
             VStack(alignment: .leading, spacing: 5) {

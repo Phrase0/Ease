@@ -122,7 +122,11 @@ struct MealRecord: Identifiable, Equatable {
     var hasSymptoms: Bool { !symptoms.isEmpty }
 
     var displayDate: String { date.formatted(date: .long, time: .omitted) }
-    var displayTime: String { date.formatted(date: .omitted, time: .shortened) }
+    var displayTime: String {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm"
+        return f.string(from: date)
+    }
 
     var foodSummary: String {
         var parts: [String] = []
