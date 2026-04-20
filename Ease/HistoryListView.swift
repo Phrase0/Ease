@@ -35,7 +35,9 @@ struct HistoryListView: View {
                 ForEach(groupedRecords, id: \.0) { date, records in
                     Section {
                         ForEach(records) { record in
-                            NavigationLink(destination: RecordDetailView(record: record)) {
+                            NavigationLink {
+                                RecordDetailView(record: record)
+                            } label: {
                                 RecordRowView(record: record)
                             }
                             .listRowBackground(Color.easeCard)

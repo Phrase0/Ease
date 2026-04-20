@@ -9,13 +9,16 @@ import SwiftUI
 
 struct StatsView: View {
     enum TimeRange: String, CaseIterable {
-        case all   = "全部"
-        case today = "今日"
-        case week  = "最近7天"
-        case month = "最近30天"
+        case all    = "全部"
+        case today  = "今日"
+        case week   = "最近7天"
+        case month  = "最近30天"
+        case custom = "自訂"
     }
 
     @State private var selectedRange: TimeRange = .week
+    @State private var customStart: Date = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+    @State private var customEnd: Date = Date()
 
     var filteredRecords: [MealRecord] {
         let now = Date()
@@ -31,6 +34,10 @@ struct StatsView: View {
         case .month:
             let start = cal.date(byAdding: .day, value: -30, to: now)!
             return mockRecords.filter { $0.date >= start }
+        case .custom:
+            let start = cal.startOfDay(for: customStart)
+            let end = cal.date(bySettingHour: 23, minute: 59, second: 59, of: customEnd)!
+            return mockRecords.filter { $0.date >= start && $0.date <= end }
         }
     }
 
@@ -65,22 +72,57 @@ struct StatsView: View {
                     VStack(alignment: .leading, spacing: 16) {
 
                         // Time range picker
-                        Menu {
-                            ForEach(TimeRange.allCases, id: \.self) { range in
-                                Button(range.rawValue) { selectedRange = range }
+                        HStack(spacing: 8) {
+                            Menu {
+                                ForEach(TimeRange.allCases, id: \.self) { range in
+                                    Button(range.rawValue) { selectedRange = range }
+                                }
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Text(selectedRange.rawValue)
+                                        .font(.subheadline.weight(.medium))
+                                    Image(systemName: "chevron.down")
+                                        .font(.caption.weight(.medium))
+                                }
+                                .foregroundStyle(Color.easeAccent)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 8)
+                                .background(Color.easeAccent.opacity(0.1))
+                                .clipShape(Capsule())
                             }
-                        } label: {
-                            HStack(spacing: 6) {
-                                Text(selectedRange.rawValue)
-                                    .font(.subheadline.weight(.medium))
-                                Image(systemName: "chevron.down")
-                                    .font(.caption.weight(.medium))
+                            Spacer()
+                        }
+
+                        if selectedRange == .custom {
+                            HStack(spacing: 0) {
+                                HStack(spacing: 6) {
+                                    Text("開始")
+                                        .font(.subheadline)
+                                        .foregroundStyle(Color.easeTextSecondary)
+                                    DatePicker("", selection: $customStart, in: ...customEnd, displayedComponents: .date)
+                                        .datePickerStyle(.compact)
+                                        .labelsHidden()
+                                        .tint(Color.easeAccent)
+                                }
+                                .frame(maxWidth: .infinity)
+
+                                Divider().overlay(Color.easeDivider)
+
+                                HStack(spacing: 6) {
+                                    Text("結束")
+                                        .font(.subheadline)
+                                        .foregroundStyle(Color.easeTextSecondary)
+                                    DatePicker("", selection: $customEnd, in: customStart...Date(), displayedComponents: .date)
+                                        .datePickerStyle(.compact)
+                                        .labelsHidden()
+                                        .tint(Color.easeAccent)
+                                }
+                                .frame(maxWidth: .infinity)
                             }
-                            .foregroundStyle(Color.easeAccent)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 8)
-                            .background(Color.easeAccent.opacity(0.1))
-                            .clipShape(Capsule())
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.easeCard)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
                         }
 
                         if filteredRecords.isEmpty {

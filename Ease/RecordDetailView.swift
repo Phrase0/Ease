@@ -12,22 +12,19 @@ struct RecordDetailView: View {
     @State private var isEditing = false
 
     var body: some View {
-        ZStack {
-            Color.easeBg.ignoresSafeArea()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-
-                    // Header: date, time, meal type
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(record.date, style: .date)
-                                .font(.title3.weight(.semibold))
-                                .foregroundStyle(Color.easeTextPrimary)
-                            Text(record.date, style: .time)
-                                .font(.subheadline)
-                                .foregroundStyle(Color.easeTextSecondary)
-                        }
+                // Header: date, time, meal type
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(record.displayDate)
+                            .font(.title3.weight(.semibold))
+                            .foregroundStyle(Color.easeTextPrimary)
+                        Text(record.displayTime)
+                            .font(.subheadline)
+                            .foregroundStyle(Color.easeTextSecondary)
+                    }
                         Spacer()
                         Text(record.mealType.rawValue)
                             .font(.subheadline.weight(.medium))
@@ -127,8 +124,8 @@ struct RecordDetailView: View {
                     }
                 }
                 .padding(16)
-            }
         }
+        .background(Color.easeBg.ignoresSafeArea())
         .navigationTitle("詳細紀錄")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.easeBg, for: .navigationBar)

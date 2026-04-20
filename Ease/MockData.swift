@@ -50,6 +50,7 @@ enum DiningType: String, CaseIterable, Hashable {
 enum Symptom: String, CaseIterable, Hashable {
     case bloating = "脹氣"
     case burping = "打飽嗝"
+    case hiccup = "打嗝"
     case nausea = "想吐"
     case acidReflux = "泛酸"
     case vomiting = "嘔吐"
@@ -58,7 +59,8 @@ enum Symptom: String, CaseIterable, Hashable {
     var emoji: String {
         switch self {
         case .bloating:   return "😖"
-        case .burping:    return "💨"
+        case .burping:    return "🫧"
+        case .hiccup:     return "💨"
         case .nausea:     return "🤢"
         case .acidReflux: return "🔥"
         case .vomiting:   return "🤮"
@@ -107,9 +109,8 @@ struct MealRecord: Identifiable {
 
     var hasSymptoms: Bool { !symptoms.isEmpty }
 
-    var symptomEmojis: String {
-        symptoms.prefix(3).map { $0.emoji }.joined(separator: " ")
-    }
+    var displayDate: String { date.formatted(date: .long, time: .omitted) }
+    var displayTime: String { date.formatted(date: .omitted, time: .shortened) }
 
     var foodSummary: String {
         var parts: [String] = []

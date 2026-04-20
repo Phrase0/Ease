@@ -103,7 +103,7 @@ struct RecordRowView: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Text(record.date, style: .time)
+            Text(record.displayTime)
                 .font(.caption.monospacedDigit())
                 .foregroundStyle(Color.easeTextSecondary)
                 .frame(width: 46, alignment: .leading)
