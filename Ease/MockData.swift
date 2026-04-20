@@ -67,6 +67,18 @@ enum Symptom: String, CaseIterable, Hashable {
         case .other:      return "😶"
         }
     }
+
+    var weight: Int {
+        switch self {
+        case .bloating:   return 1
+        case .burping:    return 1
+        case .hiccup:     return 2
+        case .nausea:     return 3
+        case .acidReflux: return 2
+        case .vomiting:   return 5
+        case .other:      return 1
+        }
+    }
 }
 
 // MARK: - Model

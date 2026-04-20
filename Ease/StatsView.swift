@@ -49,17 +49,29 @@ struct StatsView: View {
         filteredRecords.filter { $0.mealType == type }.count
     }
 
-    var worstDay: (date: Date, records: Int, symptoms: Int)? {
+    func foodTagCount(_ tag: FoodTag) -> Int {
+        filteredRecords.filter { $0.foodTags.contains(tag) }.count
+    }
+
+    func diningTypeCount(_ type: DiningType) -> Int {
+        filteredRecords.filter { $0.diningType == type }.count
+    }
+
+    func eatingHabitCount(_ habit: EatingHabit) -> Int {
+        filteredRecords.filter { $0.eatingHabits.contains(habit) }.count
+    }
+
+    var worstDay: (date: Date, records: Int, symptomScore: Int)? {
         guard !filteredRecords.isEmpty else { return nil }
         let cal = Calendar.current
         let grouped = Dictionary(grouping: filteredRecords) {
             cal.startOfDay(for: $0.date)
         }
         return grouped
-            .map { (date: $0.key, records: $0.value.count, symptoms: $0.value.flatMap(\.symptoms).count) }
+            .map { (date: $0.key, records: $0.value.count, symptomScore: $0.value.flatMap(\.symptoms).map(\.weight).reduce(0, +)) }
             .max {
-                if $0.records != $1.records { return $0.records < $1.records }
-                return $0.symptoms < $1.symptoms
+                if $0.symptomScore != $1.symptomScore { return $0.symptomScore < $1.symptomScore }
+                return $0.records < $1.records
             }
     }
 
@@ -165,6 +177,48 @@ struct StatsView: View {
                                 }
                             }
 
+                            // Food tag stats
+                            let activeFoodTags = FoodTag.allCases.filter { foodTagCount($0) > 0 }
+                            if !activeFoodTags.isEmpty {
+                                statsCard("吃了什麼") {
+                                    ForEach(activeFoodTags, id: \.self) { tag in
+                                        StatRow(
+                                            label: tag.rawValue,
+                                            count: foodTagCount(tag),
+                                            total: filteredRecords.count
+                                        )
+                                    }
+                                }
+                            }
+
+                            // Dining type stats
+                            let activeDiningTypes = DiningType.allCases.filter { diningTypeCount($0) > 0 }
+                            if !activeDiningTypes.isEmpty {
+                                statsCard("用餐方式") {
+                                    ForEach(activeDiningTypes, id: \.self) { type in
+                                        StatRow(
+                                            label: type.rawValue,
+                                            count: diningTypeCount(type),
+                                            total: filteredRecords.count
+                                        )
+                                    }
+                                }
+                            }
+
+                            // Eating habit stats
+                            let activeHabits = EatingHabit.allCases.filter { eatingHabitCount($0) > 0 }
+                            if !activeHabits.isEmpty {
+                                statsCard("進食習慣") {
+                                    ForEach(activeHabits, id: \.self) { habit in
+                                        StatRow(
+                                            label: habit.rawValue,
+                                            count: eatingHabitCount(habit),
+                                            total: filteredRecords.count
+                                        )
+                                    }
+                                }
+                            }
+
                             // Worst day
                             if let worst = worstDay {
                                 VStack(alignment: .leading, spacing: 10) {
@@ -180,7 +234,7 @@ struct StatsView: View {
                                                 .foregroundStyle(Color.easeTextPrimary)
                                             HStack(spacing: 12) {
                                                 Label("\(worst.records) 筆", systemImage: "note.text")
-                                                Label("\(worst.symptoms) 次症狀", systemImage: "waveform.path.ecg")
+                                                Label("嚴重度 \(worst.symptomScore)", systemImage: "waveform.path.ecg")
                                             }
                                             .font(.caption)
                                             .foregroundStyle(Color.easeTextSecondary)
