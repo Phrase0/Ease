@@ -37,7 +37,7 @@ enum FoodTag: String, CaseIterable, Hashable {
 enum EatingHabit: String, CaseIterable, Hashable {
     case eatTooFast = "吃太快"
     case talkingWhileEating = "一直說話"
-    case noRestAfterMeal = "飯後無休息"
+    case noRestAfterMeal = "無休息"
     case sleepingOnStomach = "趴睡"
 }
 

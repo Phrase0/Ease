@@ -56,6 +56,7 @@ struct HistoryListView: View {
             .background(Color.easeBg)
             .searchable(text: $searchText, prompt: "搜尋")
             .navigationTitle("紀錄")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.easeBg, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {

@@ -201,6 +201,7 @@ struct StatsView: View {
                 }
             }
             .navigationTitle("統計")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.easeBg, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
         }
