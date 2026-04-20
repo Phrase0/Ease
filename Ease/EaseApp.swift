@@ -2,7 +2,7 @@
 //  EaseApp.swift
 //  Ease
 //
-//  Created by Peiyun on 2026/4/17.
+//  Created by Peiyun Wu on 2026/4/17.
 //
 
 import SwiftUI

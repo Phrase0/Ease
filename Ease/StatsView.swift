@@ -1,3 +1,10 @@
+//
+//  StatsView.swift
+//  Ease
+//
+//  Created by Peiyun Wu on 2026/4/20.
+//
+
 import SwiftUI
 
 struct StatsView: View {

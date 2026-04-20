@@ -1,3 +1,10 @@
+//
+//  RecordView.swift
+//  Ease
+//
+//  Created by Peiyun Wu on 2026/4/20.
+//
+
 import SwiftUI
 
 struct RecordView: View {
@@ -9,6 +16,7 @@ struct RecordView: View {
     @State private var selectedFoodTags: Set<FoodTag>
     @State private var foodNote: String
     @State private var selectedDiningType: DiningType?
+    @State private var selectedEatingHabits: Set<EatingHabit>
     @State private var selectedSymptoms: Set<Symptom>
     @State private var otherSymptomText: String
     @State private var additionalNote: String
@@ -20,6 +28,7 @@ struct RecordView: View {
         _selectedFoodTags = State(initialValue: Set(existingRecord?.foodTags ?? []))
         _foodNote = State(initialValue: existingRecord?.note ?? "")
         _selectedDiningType = State(initialValue: existingRecord?.diningType)
+        _selectedEatingHabits = State(initialValue: Set(existingRecord?.eatingHabits ?? []))
         _selectedSymptoms = State(initialValue: Set(existingRecord?.symptoms ?? []))
         _otherSymptomText = State(initialValue: existingRecord?.otherSymptom ?? "")
         _additionalNote = State(initialValue: existingRecord?.additionalNote ?? "")
@@ -110,6 +119,20 @@ struct RecordView: View {
                             }
                         }
 
+                        // MARK: Eating Habits
+                        FormSection("進食習慣") {
+                            LazyVGrid(
+                                columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
+                                alignment: .leading,
+                                spacing: 8
+                            ) {
+                                ForEach(EatingHabit.allCases, id: \.self) { habit in
+                                    Button(habit.rawValue) { toggleEatingHabit(habit) }
+                                        .buttonStyle(TagButtonStyle(isSelected: selectedEatingHabits.contains(habit)))
+                                }
+                            }
+                        }
+
                         // MARK: Symptoms
                         FormSection("症狀") {
                             LazyVGrid(
@@ -180,6 +203,11 @@ struct RecordView: View {
     private func toggleFoodTag(_ tag: FoodTag) {
         if selectedFoodTags.contains(tag) { selectedFoodTags.remove(tag) }
         else { selectedFoodTags.insert(tag) }
+    }
+
+    private func toggleEatingHabit(_ habit: EatingHabit) {
+        if selectedEatingHabits.contains(habit) { selectedEatingHabits.remove(habit) }
+        else { selectedEatingHabits.insert(habit) }
     }
 
     private func toggleSymptom(_ symptom: Symptom) {

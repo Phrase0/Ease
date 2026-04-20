@@ -1,3 +1,10 @@
+//
+//  SharedComponents.swift
+//  Ease
+//
+//  Created by Peiyun Wu on 2026/4/20.
+//
+
 import SwiftUI
 
 // MARK: - Color Tokens
@@ -127,8 +134,9 @@ struct RecordRowView: View {
                 }
 
                 if record.hasSymptoms {
-                    Text(record.symptomEmojis)
-                        .font(.subheadline)
+                    Text(record.symptoms.prefix(3).map { "\($0.emoji) \($0.rawValue)" }.joined(separator: "　"))
+                        .font(.caption)
+                        .foregroundStyle(Color.easeSymptom)
                 } else {
                     Text("無症狀")
                         .font(.caption)

@@ -1,3 +1,10 @@
+//
+//  MockData.swift
+//  Ease
+//
+//  Created by Peiyun Wu on 2026/4/20.
+//
+
 import Foundation
 
 // MARK: - Enums
@@ -21,9 +28,17 @@ enum FoodTag: String, CaseIterable, Hashable {
     case bubbleTea = "手搖飲"
     case carbonated = "碳酸"
     case alcohol = "酒精"
-    case fried = "油炸"
-    case light = "清淡"
+    case highCalorie = "高熱量"
+    case heavyOil = "重油"
+    case heavySalty = "重鹹"
     case spicy = "辣"
+}
+
+enum EatingHabit: String, CaseIterable, Hashable {
+    case eatTooFast = "吃太快"
+    case talkingWhileEating = "一直說話"
+    case noRestAfterMeal = "飯後無休息"
+    case sleepingOnStomach = "趴睡"
 }
 
 enum DiningType: String, CaseIterable, Hashable {
@@ -61,6 +76,7 @@ struct MealRecord: Identifiable {
     let foodTags: [FoodTag]
     let note: String
     let diningType: DiningType?
+    let eatingHabits: [EatingHabit]
     let symptoms: [Symptom]
     let otherSymptom: String?
     let additionalNote: String?
@@ -72,6 +88,7 @@ struct MealRecord: Identifiable {
         foodTags: [FoodTag] = [],
         note: String = "",
         diningType: DiningType? = nil,
+        eatingHabits: [EatingHabit] = [],
         symptoms: [Symptom] = [],
         otherSymptom: String? = nil,
         additionalNote: String? = nil
@@ -82,6 +99,7 @@ struct MealRecord: Identifiable {
         self.foodTags = foodTags
         self.note = note
         self.diningType = diningType
+        self.eatingHabits = eatingHabits
         self.symptoms = symptoms
         self.otherSymptom = otherSymptom
         self.additionalNote = additionalNote
@@ -114,7 +132,7 @@ let mockRecords: [MealRecord] = {
     }
     return [
         MealRecord(date: daysAgo(0, hour: 12), mealType: .lunch,
-                   foodTags: [.fried, .spicy], note: "炸雞、珍奶",
+                   foodTags: [.highCalorie, .spicy], note: "炸雞、珍奶",
                    diningType: .takeout, symptoms: [.bloating, .nausea],
                    additionalNote: "吃很快"),
         MealRecord(date: daysAgo(0, hour: 8), mealType: .breakfast,
@@ -125,17 +143,17 @@ let mockRecords: [MealRecord] = {
                    diningType: .eatOut, symptoms: [.bloating, .vomiting, .nausea],
                    additionalNote: "很辣很油"),
         MealRecord(date: daysAgo(2, hour: 12), mealType: .lunch,
-                   foodTags: [.rice, .light], note: "清粥小菜",
+                   foodTags: [.rice], note: "清粥小菜",
                    diningType: .homeCook, symptoms: []),
         MealRecord(date: daysAgo(3, hour: 23), mealType: .lateNight,
-                   foodTags: [.carbonated, .fried], note: "泡麵、可樂",
+                   foodTags: [.carbonated, .heavyOil], note: "泡麵、可樂",
                    diningType: .takeout, symptoms: [.bloating, .burping],
                    additionalNote: "太晚吃了"),
         MealRecord(date: daysAgo(5, hour: 15), mealType: .afternoonTea,
                    foodTags: [.bubbleTea, .sweet], note: "珍珠奶茶",
                    diningType: .takeout, symptoms: [.acidReflux]),
         MealRecord(date: daysAgo(7, hour: 18), mealType: .dinner,
-                   foodTags: [.rice, .light], note: "家常菜",
+                   foodTags: [.rice], note: "家常菜",
                    diningType: .homeCook, symptoms: []),
     ]
 }()
