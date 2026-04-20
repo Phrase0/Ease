@@ -83,7 +83,7 @@ enum Symptom: String, CaseIterable, Hashable {
 
 // MARK: - Model
 
-struct MealRecord: Identifiable {
+struct MealRecord: Identifiable, Equatable {
     let id: UUID
     let date: Date
     let mealType: MealType

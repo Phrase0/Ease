@@ -6,16 +6,15 @@
 //
 
 import SwiftUI
-import CoreData
 
 @main
 struct EaseApp: App {
-    let persistenceController = PersistenceController.shared
+    @StateObject private var store = RecordStore()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(store)
         }
     }
 }

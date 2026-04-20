@@ -1,0 +1,196 @@
+//
+//  RecordView.swift
+//  Ease
+//
+//  Created by Peiyun Wu on 2026/4/20.
+//
+
+import SwiftUI
+
+struct RecordView: View {
+    let existingRecord: MealRecord?
+    @EnvironmentObject private var store: RecordStore
+    @StateObject private var viewModel: RecordFormViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    init(existingRecord: MealRecord? = nil) {
+        self.existingRecord = existingRecord
+        _viewModel = StateObject(wrappedValue: RecordFormViewModel(existingRecord: existingRecord))
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 12) {
+
+                    // MARK: Date & Time
+                    FormSection("日期與時間") {
+                        HStack {
+                            Image(systemName: "calendar")
+                                .foregroundStyle(Color.easeAccent)
+                                .frame(width: 20)
+                            DatePicker("", selection: $viewModel.date, displayedComponents: .date)
+                                .datePickerStyle(.compact)
+                                .labelsHidden()
+                                .tint(Color.easeAccent)
+                            Spacer()
+                        }
+
+                        Divider().overlay(Color.easeDivider)
+
+                        HStack {
+                            Image(systemName: "clock")
+                                .foregroundStyle(Color.easeAccent)
+                                .frame(width: 20)
+                            DatePicker("", selection: $viewModel.date, displayedComponents: .hourAndMinute)
+                                .datePickerStyle(.compact)
+                                .labelsHidden()
+                                .tint(Color.easeAccent)
+                            Spacer()
+                        }
+                    }
+
+                    // MARK: Meal Type
+                    FormSection("餐種") {
+                        Picker("選擇餐種", selection: $viewModel.selectedMealType) {
+                            ForEach(MealType.allCases, id: \.self) { type in
+                                Text(type.rawValue).tag(type)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .tint(Color.easeAccent)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+
+                    // MARK: Food Tags
+                    FormSection("吃了什麼") {
+                        LazyVGrid(
+                            columns: [GridItem(.adaptive(minimum: 68), spacing: 8)],
+                            alignment: .leading,
+                            spacing: 8
+                        ) {
+                            ForEach(FoodTag.allCases, id: \.self) { tag in
+                                Button(tag.rawValue) { viewModel.toggleFoodTag(tag) }
+                                    .buttonStyle(TagButtonStyle(isSelected: viewModel.selectedFoodTags.contains(tag)))
+                            }
+                        }
+
+                        Divider().overlay(Color.easeDivider).padding(.top, 4)
+
+                        TextField("備註（例：咖啡、炸雞、泡麵）", text: $viewModel.foodNote)
+                            .font(.subheadline)
+                            .foregroundStyle(Color.easeTextPrimary)
+                            .tint(Color.easeAccent)
+                    }
+
+                    // MARK: Dining Type
+                    FormSection("用餐方式") {
+                        HStack(spacing: 8) {
+                            ForEach(DiningType.allCases, id: \.self) { type in
+                                let isSelected = viewModel.selectedDiningType == type
+                                Button(type.rawValue) {
+                                    viewModel.selectedDiningType = isSelected ? nil : type
+                                }
+                                .buttonStyle(TagButtonStyle(
+                                    isSelected: isSelected,
+                                    selectedColor: Color.easeNavy
+                                ))
+                                .frame(maxWidth: .infinity)
+                            }
+                        }
+                    }
+
+                    // MARK: Eating Habits
+                    FormSection("進食習慣") {
+                        LazyVGrid(
+                            columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
+                            alignment: .leading,
+                            spacing: 8
+                        ) {
+                            ForEach(EatingHabit.allCases, id: \.self) { habit in
+                                Button(habit.rawValue) { viewModel.toggleEatingHabit(habit) }
+                                    .buttonStyle(TagButtonStyle(isSelected: viewModel.selectedEatingHabits.contains(habit)))
+                            }
+                        }
+                    }
+
+                    // MARK: Symptoms
+                    FormSection("症狀") {
+                        LazyVGrid(
+                            columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
+                            alignment: .leading,
+                            spacing: 8
+                        ) {
+                            ForEach(Symptom.allCases, id: \.self) { symptom in
+                                Button("\(symptom.emoji) \(symptom.rawValue)") {
+                                    viewModel.toggleSymptom(symptom)
+                                }
+                                .buttonStyle(TagButtonStyle(
+                                    isSelected: viewModel.selectedSymptoms.contains(symptom),
+                                    selectedColor: Color.easeSymptom
+                                ))
+                            }
+                        }
+
+                        if viewModel.selectedSymptoms.contains(.other) {
+                            Divider().overlay(Color.easeDivider).padding(.top, 4)
+                            TextField("描述其他症狀", text: $viewModel.otherSymptomText)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.easeTextPrimary)
+                                .tint(Color.easeAccent)
+                        }
+                    }
+
+                    // MARK: Additional Notes
+                    FormSection("備註（選填）") {
+                        TextField("例：吃很快 / 很油 / 很晚吃", text: $viewModel.additionalNote, axis: .vertical)
+                            .font(.subheadline)
+                            .foregroundStyle(Color.easeTextPrimary)
+                            .tint(Color.easeAccent)
+                            .lineLimit(3...)
+                    }
+
+                    // MARK: Save Button
+                    Button(action: save) {
+                        Text("儲存")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.easeAccent)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .padding(.top, 4)
+                }
+                .padding(16)
+                .padding(.bottom, 32)
+            }
+            .background(Color.easeBg.ignoresSafeArea())
+            .navigationTitle(existingRecord == nil ? "新增紀錄" : "編輯紀錄")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.easeBg, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("取消") { dismiss() }
+                        .foregroundStyle(Color.easeTextSecondary)
+                }
+            }
+        }
+    }
+
+    private func save() {
+        let record = viewModel.buildRecord()
+        if existingRecord != nil {
+            store.update(record)
+        } else {
+            store.add(record)
+        }
+        dismiss()
+    }
+}
+
+#Preview {
+    RecordView()
+        .environmentObject(RecordStore())
+}
