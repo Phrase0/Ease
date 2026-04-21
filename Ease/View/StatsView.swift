@@ -29,6 +29,7 @@ struct StatsView: View {
                                 Image(systemName: "chevron.down")
                                     .font(.caption.weight(.medium))
                             }
+                            .frame(minWidth: 100)
                             .foregroundStyle(Color.easeAccent)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
@@ -39,37 +40,40 @@ struct StatsView: View {
                     }
 
                     if viewModel.selectedRange == .custom {
-                        HStack(spacing: 0) {
-                            HStack(spacing: 6) {
+                        VStack(spacing: 0) {
+                            HStack {
                                 Text("開始")
                                     .font(.subheadline)
                                     .foregroundStyle(Color.easeTextSecondary)
+                                Spacer()
                                 DatePicker("", selection: $viewModel.customStart,
                                            in: ...viewModel.customEnd,
                                            displayedComponents: .date)
                                     .datePickerStyle(.compact)
                                     .labelsHidden()
                                     .tint(Color.easeAccent)
+                                    .environment(\.locale, Locale(identifier: "en_US"))
                             }
-                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
 
                             Divider().overlay(Color.easeDivider)
 
-                            HStack(spacing: 6) {
+                            HStack {
                                 Text("結束")
                                     .font(.subheadline)
                                     .foregroundStyle(Color.easeTextSecondary)
+                                Spacer()
                                 DatePicker("", selection: $viewModel.customEnd,
                                            in: viewModel.customStart...Date(),
                                            displayedComponents: .date)
                                     .datePickerStyle(.compact)
                                     .labelsHidden()
                                     .tint(Color.easeAccent)
+                                    .environment(\.locale, Locale(identifier: "en_US"))
                             }
-                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
                         }
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 12)
                         .background(Color.easeCard)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
