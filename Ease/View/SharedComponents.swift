@@ -155,3 +155,4 @@ struct RecordRowView: View {
         .padding(.vertical, 6)
     }
 }
+

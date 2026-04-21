@@ -16,28 +16,27 @@ struct RecordDetailView: View {
             VStack(alignment: .leading, spacing: 12) {
 
                 // Header: date, time, meal type
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(record.displayDate)
-                            .font(.title3.weight(.semibold))
-                            .foregroundStyle(Color.easeTextPrimary)
-                        Text(record.displayTime)
-                            .font(.subheadline)
-                            .foregroundStyle(Color.easeTextSecondary)
-                    }
-                        Spacer()
-                        Text(record.mealType.rawValue)
-                            .font(.subheadline.weight(.medium))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.easeAccent.opacity(0.12))
-                            .foregroundStyle(Color.easeAccent)
-                            .clipShape(Capsule())
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(16)
-                    .background(Color.easeCard)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(record.displayDate)
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(Color.easeTextPrimary)
+                    Text(record.displayTime)
+                        .font(.subheadline)
+                        .foregroundStyle(Color.easeTextSecondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .overlay(alignment: .topTrailing) {
+                    Text(record.mealType.rawValue)
+                        .font(.subheadline.weight(.medium))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color.easeAccent.opacity(0.12))
+                        .foregroundStyle(Color.easeAccent)
+                        .clipShape(Capsule())
+                }
+                .padding(16)
+                .background(Color.easeCard)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
 
                     // Food
                     if !record.foodTags.isEmpty || !record.note.isEmpty {
