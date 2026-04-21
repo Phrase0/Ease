@@ -112,7 +112,7 @@ struct RecordRowView: View {
                     .font(.system(size: 11))
                     .foregroundStyle(Color.easeTextSecondary)
             }
-            .frame(width: 40, alignment: .leading)
+            .frame(width: 48, alignment: .leading)
             .padding(.top, 2)
 
             VStack(alignment: .leading, spacing: 5) {
@@ -152,6 +152,6 @@ struct RecordRowView: View {
 
             Spacer(minLength: 0)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
     }
 }

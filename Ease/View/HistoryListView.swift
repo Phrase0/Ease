@@ -28,8 +28,8 @@ struct HistoryListView: View {
                         }
                     } header: {
                         Text(date, format: .dateTime.month(.wide).day().weekday(.abbreviated))
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.easeTextSecondary)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.easeTextPrimary)
                             .textCase(nil)
                     }
                 }
