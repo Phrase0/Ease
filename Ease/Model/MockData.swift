@@ -124,7 +124,14 @@ struct MealRecord: Identifiable, Equatable {
     var displayDate: String { date.formatted(date: .long, time: .omitted) }
     var displayTime: String {
         let f = DateFormatter()
-        f.dateFormat = "HH:mm"
+        f.dateFormat = "h:mm"
+        return f.string(from: date)
+    }
+
+    var displayAmPm: String {
+        let f = DateFormatter()
+        f.dateFormat = "a"
+        f.locale = Locale(identifier: "en_US")
         return f.string(from: date)
     }
 

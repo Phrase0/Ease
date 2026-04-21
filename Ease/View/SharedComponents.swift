@@ -104,12 +104,16 @@ struct RecordRowView: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Text(record.displayTime)
-                .font(.caption.monospacedDigit())
-                .foregroundStyle(Color.easeTextSecondary)
-                .lineLimit(1)
-                .frame(width: 40, alignment: .leading)
-                .padding(.top, 2)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(record.displayTime)
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(Color.easeTextSecondary)
+                Text(record.displayAmPm)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.easeTextSecondary)
+            }
+            .frame(width: 40, alignment: .leading)
+            .padding(.top, 2)
 
             VStack(alignment: .leading, spacing: 5) {
                 HStack(spacing: 6) {
