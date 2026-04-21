@@ -11,7 +11,6 @@ struct HistoryListView: View {
     @EnvironmentObject private var store: RecordStore
     @StateObject private var viewModel = HistoryViewModel()
     @State private var showingNewRecord = false
-    @State private var selectedRecord: MealRecord? = nil
 
     var body: some View {
         NavigationStack {
@@ -32,7 +31,7 @@ struct HistoryListView: View {
                     }
                 }
                 .sheet(isPresented: $showingNewRecord) { RecordView() }
-                .navigationDestination(item: $selectedRecord) { record in
+                .navigationDestination(for: MealRecord.self) { record in
                     RecordDetailView(record: record)
                 }
         }
@@ -45,16 +44,16 @@ struct HistoryListView: View {
             ForEach(viewModel.groupedRecords, id: \.0) { date, records in
                 Section {
                     ForEach(records) { record in
-                        RecordRowView(record: record)
-                            .contentShape(Rectangle())
-                            .onTapGesture { selectedRecord = record }
-                            .listRowBackground(Color.easeCard)
-                            .listRowSeparatorTint(Color.easeDivider)
+                        NavigationLink(value: record) {
+                            RecordRowView(record: record)
+                        }
+                        .listRowBackground(Color.easeCard)
+                        .listRowSeparatorTint(Color.easeDivider)
                     }
                 } header: {
                     Text(date, format: .dateTime.month(.wide).day().weekday(.abbreviated))
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color.easeTextPrimary)
+                        .foregroundStyle(Color.easeTextSecondary)
                         .textCase(nil)
                 }
             }

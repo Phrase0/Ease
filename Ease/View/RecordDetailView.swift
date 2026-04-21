@@ -15,20 +15,21 @@ struct RecordDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
 
-                VStack(alignment: .leading, spacing: 4) {
+                // Header
+                VStack(alignment: .leading, spacing: 6) {
                     Text(record.displayDate)
                         .font(.title3.weight(.semibold))
                         .foregroundStyle(Color.easeTextPrimary)
                     Text("\(record.displayTime) \(record.displayAmPm)")
-                        .font(.subheadline.monospacedDigit())
+                        .font(.callout.monospacedDigit())
                         .foregroundStyle(Color.easeTextSecondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .overlay(alignment: .topTrailing) {
                     Text(record.mealType.rawValue)
-                        .font(.subheadline.weight(.medium))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
                         .background(Color.easeAccent.opacity(0.12))
                         .foregroundStyle(Color.easeAccent)
                         .clipShape(Capsule())
@@ -37,8 +38,9 @@ struct RecordDetailView: View {
                 .background(Color.easeCard)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
+                // Food
                 if !record.foodTags.isEmpty || !record.note.isEmpty {
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 12) {
                         Text("吃了什麼")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(Color.easeTextSecondary)
@@ -55,7 +57,7 @@ struct RecordDetailView: View {
                         if !record.note.isEmpty {
                             Text(record.note)
                                 .font(.subheadline)
-                                .foregroundStyle(Color.easeTextSecondary)
+                                .foregroundStyle(Color.easeTextPrimary)
                         }
 
                         if let diningType = record.diningType {
@@ -74,7 +76,8 @@ struct RecordDetailView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
 
-                VStack(alignment: .leading, spacing: 10) {
+                // Symptoms
+                VStack(alignment: .leading, spacing: 12) {
                     Text("症狀")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(Color.easeTextSecondary)
@@ -82,8 +85,8 @@ struct RecordDetailView: View {
 
                     if record.symptoms.isEmpty {
                         Text("無症狀")
-                            .font(.subheadline)
-                            .foregroundStyle(Color.easeTextSecondary.opacity(0.6))
+                            .font(.callout)
+                            .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
                     } else {
                         TagPillRow(
                             tags: record.symptoms.map { "\($0.emoji) \($0.rawValue)" },
@@ -102,8 +105,9 @@ struct RecordDetailView: View {
                 .background(Color.easeCard)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
+                // Additional notes
                 if let note = record.additionalNote, !note.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 12) {
                         Text("備註")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(Color.easeTextSecondary)
