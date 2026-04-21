@@ -150,22 +150,15 @@ struct RecordView: View {
                             .lineLimit(3...)
                     }
 
-                    // MARK: Save Button
-                    Button(action: save) {
-                        Text("儲存")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(Color.easeAccent)
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                    }
-                    .padding(.top, 4)
                 }
                 .padding(16)
                 .padding(.bottom, 32)
             }
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.easeBg.ignoresSafeArea())
+            .onTapGesture {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            }
             .navigationTitle(existingRecord == nil ? "新增紀錄" : "編輯紀錄")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.easeBg, for: .navigationBar)
@@ -174,6 +167,11 @@ struct RecordView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") { dismiss() }
                         .foregroundStyle(Color.easeTextSecondary)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("儲存", action: save)
+                        .foregroundStyle(Color.easeAccent)
+                        .fontWeight(.semibold)
                 }
             }
         }
