@@ -109,7 +109,7 @@ struct RecordRowView: View {
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(Color.easeTextSecondary)
                 Text(record.displayAmPm)
-                    .font(.system(size: 11))
+                    .font(.caption2)
                     .foregroundStyle(Color.easeTextSecondary)
             }
             .frame(width: 48, alignment: .leading)

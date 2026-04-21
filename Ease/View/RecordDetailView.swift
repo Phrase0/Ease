@@ -19,8 +19,8 @@ struct RecordDetailView: View {
                     Text(record.displayDate)
                         .font(.title3.weight(.semibold))
                         .foregroundStyle(Color.easeTextPrimary)
-                    Text(record.displayTime)
-                        .font(.subheadline)
+                    Text("\(record.displayTime) \(record.displayAmPm)")
+                        .font(.subheadline.monospacedDigit())
                         .foregroundStyle(Color.easeTextSecondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
