@@ -65,9 +65,10 @@ class StatsViewModel: ObservableObject {
             let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: customEnd)!
             filtered = records.filter { $0.date >= start && $0.date <= end }
         }
-        filteredRecords = filtered
-        updateWorstDay(from: filtered)
-        updateActiveStats(from: filtered)
+        let symptomRecords = filtered.filter(\.hasSymptoms)
+        filteredRecords = symptomRecords
+        updateWorstDay(from: symptomRecords)
+        updateActiveStats(from: symptomRecords)
     }
 
     private func updateActiveStats(from records: [MealRecord]) {

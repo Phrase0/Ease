@@ -79,8 +79,8 @@ struct StatsView: View {
                     }
 
                     if viewModel.filteredRecords.isEmpty {
-                        VStack(spacing: 8) {
-                            Image(systemName: "leaf.fill").font(.system(size: 44)).foregroundStyle(Color.easeTextSecondary)
+                        VStack(spacing: 12) {
+                            Image(systemName: "list.clipboard").font(.largeTitle).foregroundStyle(Color.easeTextSecondary)
                             Text("這段時間沒有紀錄")
                                 .font(.subheadline)
                                 .foregroundStyle(Color.easeTextSecondary)
@@ -173,7 +173,7 @@ struct StatsView: View {
                 .padding(.bottom, 32)
             }
             .background(Color.easeBg.ignoresSafeArea())
-            .navigationTitle("統計")
+            .navigationTitle("不適分析")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.easeBg, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)

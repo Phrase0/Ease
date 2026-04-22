@@ -15,7 +15,7 @@ struct ContentView: View {
 
             StatsView()
                 .tabItem {
-                    Label("統計", systemImage: "chart.bar")
+                    Label("分析", systemImage: "chart.bar")
                 }
         }
         .tint(Color.easeAccent)
