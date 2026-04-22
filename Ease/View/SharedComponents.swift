@@ -138,8 +138,19 @@ struct TagPillRow: View {
 struct RecordRowView: View {
     let record: MealRecord
 
+    private var visibleFoodText: String {
+        var parts: [String] = record.foodTags.prefix(2).map(\.rawValue)
+        if !record.note.isEmpty { parts.append(record.note) }
+        return parts.joined(separator: "、")
+    }
+
+    private var extraFoodCount: Int {
+        max(0, record.foodTags.count - 2)
+    }
+
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .top, spacing: 14) {
+            // Time
             VStack(alignment: .leading, spacing: 1) {
                 Text(record.displayTime)
                     .font(.caption.monospacedDigit())
@@ -148,13 +159,14 @@ struct RecordRowView: View {
                     .font(.caption2)
                     .foregroundStyle(Color.easeTextSecondary)
             }
-            .frame(width: 48, alignment: .leading)
-            .padding(.top, 2)
+            .frame(width: 40, alignment: .leading)
+            .padding(.top, 1)
 
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 8) {
+                // Row 1: meal type + dining type
                 HStack(spacing: 6) {
                     Text(record.mealType.rawValue)
-                        .font(.caption.weight(.medium))
+                        .font(.caption.weight(.semibold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
                         .background(Color.easeAccent.opacity(0.12))
@@ -168,27 +180,43 @@ struct RecordRowView: View {
                     }
                 }
 
-                if !record.foodSummary.isEmpty {
-                    Text(record.foodSummary)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.easeTextPrimary)
-                        .lineLimit(1)
-                }
-
+                // Row 2: symptoms — plain text, primary signal
                 if record.hasSymptoms {
-                    Text(record.symptoms.prefix(3).map { $0.rawValue }.joined(separator: "　"))
-                        .font(.caption)
-                        .foregroundStyle(Color.easeSymptom)
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Text(record.symptoms.prefix(3).map(\.rawValue).joined(separator: "、"))
+                            .font(.subheadline)
+                            .foregroundStyle(Color.easeSymptom)
+                        if record.symptoms.count > 3 {
+                            Text(" +\(record.symptoms.count - 3)")
+                                .font(.caption)
+                                .foregroundStyle(Color.easeTextSecondary)
+                        }
+                    }
                 } else {
                     Text("無症狀")
-                        .font(.caption)
-                        .foregroundStyle(Color.easeTextSecondary.opacity(0.6))
+                        .font(.subheadline)
+                        .foregroundStyle(Color.easeTextSecondary.opacity(0.45))
+                }
+
+                // Row 3: food — supporting info with +N
+                if !visibleFoodText.isEmpty {
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Text(visibleFoodText)
+                            .font(.caption)
+                            .foregroundStyle(Color.easeTextSecondary)
+                            .lineLimit(1)
+                        if extraFoodCount > 0 {
+                            Text(" +\(extraFoodCount)")
+                                .font(.caption2)
+                                .foregroundStyle(Color.easeTextSecondary.opacity(0.6))
+                        }
+                    }
                 }
             }
 
             Spacer(minLength: 0)
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, 5)
     }
 }
 
