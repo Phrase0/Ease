@@ -184,6 +184,7 @@ struct RecordRowView: View {
                     HStack(alignment: .firstTextBaseline, spacing: 0) {
                         Text(record.symptoms.prefix(3).map(\.rawValue).joined(separator: "、"))
                             .font(.subheadline)
+                            .foregroundStyle(Color.easeTextPrimary)
                         if record.symptoms.count > 3 {
                             Text(" +\(record.symptoms.count - 3)")
                                 .font(.caption)

@@ -152,11 +152,12 @@ struct CalendarPageView: View {
                             .listRowBackground(Color.easeCard)
                             .listRowSeparatorTint(Color.easeDivider)
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button(role: .destructive) {
-                                    recordToDelete = record
+                                Button {
+                                    withAnimation(.none) { recordToDelete = record }
                                 } label: {
                                     Label("刪除", systemImage: "trash")
                                 }
+                                .tint(.easeAccent)
                             }
                         }
                     } header: {
