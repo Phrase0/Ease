@@ -15,8 +15,8 @@ extension Color {
     static let easeAccent        = Color(red: 0.808, green: 0.478, blue: 0.227) // terracotta 陶土色（重點色）
     static let easeTextPrimary   = Color(red: 0.192, green: 0.157, blue: 0.125) // warm dark brown 主要文字（暖深棕）
     static let easeTextSecondary = Color(red: 0.510, green: 0.459, blue: 0.408) // medium warm brown 次要文字（中等暖棕）
-    static let easeSymptom       = Color(red: 0.600, green: 0.300, blue: 0.240) // deep brick-red 症狀色（深磚紅）
-    static let easeHealthy       = Color(red: 0.380, green: 0.570, blue: 0.400) // muted sage green 健康色（鼠尾草綠）
+    static let easeSymptom       = Color(red: 0.671, green: 0.416, blue: 0.329) // deep brick-red 症狀色（深磚紅）
+    static let easeHealthy       = Color(red: 0.725, green: 0.725, blue: 0.616) // muted sage green 健康色（鼠尾草綠）
     static let easeDivider       = Color(red: 0.871, green: 0.847, blue: 0.816) // warm divider 分隔線（暖灰色）
 }
 
@@ -184,7 +184,6 @@ struct RecordRowView: View {
                     HStack(alignment: .firstTextBaseline, spacing: 0) {
                         Text(record.symptoms.prefix(3).map(\.rawValue).joined(separator: "、"))
                             .font(.subheadline)
-                            .foregroundStyle(Color.easeSymptom)
                         if record.symptoms.count > 3 {
                             Text(" +\(record.symptoms.count - 3)")
                                 .font(.caption)
