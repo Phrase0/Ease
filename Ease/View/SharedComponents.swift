@@ -122,7 +122,7 @@ struct TagPillRow: View {
         FlowLayout(spacing: 6) {
             ForEach(tags, id: \.self) { tag in
                 Text(tag)
-                    .font(.caption.weight(.medium))
+                    .font(.subheadline)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
                     .background(background)

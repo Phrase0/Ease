@@ -57,12 +57,12 @@ struct RecordDetailView: View {
                     } else {
                         TagPillRow(
                             tags: currentRecord.symptoms.map { $0.rawValue },
-                            foreground: Color.easeSymptom,
-                            background: Color.easeSymptom.opacity(0.1)
+                            foreground: .white,
+                            background: Color.easeAccent
                         )
                         if let other = currentRecord.otherSymptom, !other.isEmpty {
                             Text("其他：\(other)")
-                                .font(.caption)
+                                .font(.footnote)
                                 .foregroundStyle(Color.easeTextSecondary)
                         }
                     }
@@ -82,8 +82,8 @@ struct RecordDetailView: View {
 
                         TagPillRow(
                             tags: currentRecord.eatingHabits.map(\.rawValue),
-                            foreground: Color.easeTextSecondary,
-                            background: Color.easeTextSecondary.opacity(0.1)
+                            foreground: .white,
+                            background: Color.easeAccent
                         )
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -103,8 +103,8 @@ struct RecordDetailView: View {
                         if !currentRecord.foodTags.isEmpty {
                             TagPillRow(
                                 tags: currentRecord.foodTags.map(\.rawValue),
-                                foreground: Color.easeAccent,
-                                background: Color.easeAccent.opacity(0.1)
+                                foreground: .white,
+                                background: Color.easeAccent
                             )
                         }
 
