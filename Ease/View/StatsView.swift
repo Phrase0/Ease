@@ -97,7 +97,7 @@ struct StatsView: View {
                         if !viewModel.activeSymptoms.isEmpty {
                             statsCard("症狀統計") {
                                 ForEach(viewModel.activeSymptoms, id: \.0) { symptom, count in
-                                    StatRow(label: symptom.rawValue, count: count, total: total, barColor: .easeSymptom)
+                                    StatRow(label: symptom.rawValue, count: count, total: total)
                                 }
                             }
                         }

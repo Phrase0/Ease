@@ -28,6 +28,11 @@ class CalendarViewModel: ObservableObject {
         currentMonth = newMonth
     }
 
+    func jumpTo(month: Date) {
+        guard let start = calendar.date(from: calendar.dateComponents([.year, .month], from: month)) else { return }
+        currentMonth = start
+    }
+
     func load(_ records: [MealRecord]) {
         let allDates = records.map { calendar.startOfDay(for: $0.date) }
         symptomDates = Set(records.filter(\.hasSymptoms).map { calendar.startOfDay(for: $0.date) })
