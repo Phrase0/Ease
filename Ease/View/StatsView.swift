@@ -102,6 +102,14 @@ struct StatsView: View {
                             }
                         }
 
+                        if !viewModel.activeEatingHabits.isEmpty {
+                            statsCard("進食習慣") {
+                                ForEach(viewModel.activeEatingHabits, id: \.0) { habit, count in
+                                    StatRow(label: habit.rawValue, count: count, total: total)
+                                }
+                            }
+                        }
+
                         if !viewModel.activeMealTypes.isEmpty {
                             statsCard("餐種分析") {
                                 ForEach(viewModel.activeMealTypes, id: \.0) { type, count in
@@ -122,14 +130,6 @@ struct StatsView: View {
                             statsCard("用餐方式") {
                                 ForEach(viewModel.activeDiningTypes, id: \.0) { type, count in
                                     StatRow(label: type.rawValue, count: count, total: total)
-                                }
-                            }
-                        }
-
-                        if !viewModel.activeEatingHabits.isEmpty {
-                            statsCard("進食習慣") {
-                                ForEach(viewModel.activeEatingHabits, id: \.0) { habit, count in
-                                    StatRow(label: habit.rawValue, count: count, total: total)
                                 }
                             }
                         }

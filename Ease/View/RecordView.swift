@@ -62,6 +62,47 @@ struct RecordView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
+                    // MARK: Symptoms
+                    FormSection("症狀") {
+                        LazyVGrid(
+                            columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
+                            alignment: .leading,
+                            spacing: 8
+                        ) {
+                            ForEach(Symptom.allCases, id: \.self) { symptom in
+                                Button(symptom.rawValue) {
+                                    viewModel.toggleSymptom(symptom)
+                                }
+                                .buttonStyle(TagButtonStyle(
+                                    isSelected: viewModel.selectedSymptoms.contains(symptom),
+                                    selectedColor: Color.easeAccent
+                                ))
+                            }
+                        }
+
+                        if viewModel.selectedSymptoms.contains(.other) {
+                            Divider().overlay(Color.easeDivider).padding(.top, 4)
+                            TextField("描述其他症狀", text: $viewModel.otherSymptomText)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.easeTextPrimary)
+                                .tint(Color.easeAccent)
+                        }
+                    }
+
+                    // MARK: Eating Habits
+                    FormSection("進食習慣") {
+                        LazyVGrid(
+                            columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
+                            alignment: .leading,
+                            spacing: 8
+                        ) {
+                            ForEach(EatingHabit.allCases, id: \.self) { habit in
+                                Button(habit.rawValue) { viewModel.toggleEatingHabit(habit) }
+                                    .buttonStyle(TagButtonStyle(isSelected: viewModel.selectedEatingHabits.contains(habit)))
+                            }
+                        }
+                    }
+
                     // MARK: Food Tags
                     FormSection("吃了什麼") {
                         LazyVGrid(
@@ -97,47 +138,6 @@ struct RecordView: View {
                                 ))
                                 .frame(maxWidth: .infinity)
                             }
-                        }
-                    }
-
-                    // MARK: Eating Habits
-                    FormSection("進食習慣") {
-                        LazyVGrid(
-                            columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
-                            alignment: .leading,
-                            spacing: 8
-                        ) {
-                            ForEach(EatingHabit.allCases, id: \.self) { habit in
-                                Button(habit.rawValue) { viewModel.toggleEatingHabit(habit) }
-                                    .buttonStyle(TagButtonStyle(isSelected: viewModel.selectedEatingHabits.contains(habit)))
-                            }
-                        }
-                    }
-
-                    // MARK: Symptoms
-                    FormSection("症狀") {
-                        LazyVGrid(
-                            columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
-                            alignment: .leading,
-                            spacing: 8
-                        ) {
-                            ForEach(Symptom.allCases, id: \.self) { symptom in
-                                Button(symptom.rawValue) {
-                                    viewModel.toggleSymptom(symptom)
-                                }
-                                .buttonStyle(TagButtonStyle(
-                                    isSelected: viewModel.selectedSymptoms.contains(symptom),
-                                    selectedColor: Color.easeAccent
-                                ))
-                            }
-                        }
-
-                        if viewModel.selectedSymptoms.contains(.other) {
-                            Divider().overlay(Color.easeDivider).padding(.top, 4)
-                            TextField("描述其他症狀", text: $viewModel.otherSymptomText)
-                                .font(.subheadline)
-                                .foregroundStyle(Color.easeTextPrimary)
-                                .tint(Color.easeAccent)
                         }
                     }
 
