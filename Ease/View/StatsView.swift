@@ -97,7 +97,7 @@ struct StatsView: View {
                         if !viewModel.activeSymptoms.isEmpty {
                             statsCard("症狀統計") {
                                 ForEach(viewModel.activeSymptoms, id: \.0) { symptom, count in
-                                    StatRow(label: symptom.rawValue, count: count, total: total)
+                                    StatRow(label: symptom.rawValue, count: count, total: total, barColor: .easeSymptom)
                                 }
                             }
                         }
@@ -211,6 +211,7 @@ struct StatRow: View {
     let label: String
     let count: Int
     let total: Int
+    var barColor: Color = .easeAccent
 
     private var ratio: Double {
         guard total > 0 else { return 0 }
@@ -233,7 +234,7 @@ struct StatRow: View {
                 .frame(height: 5)
                 .overlay(alignment: .leading) {
                     Capsule()
-                        .fill(Color.easeAccent)
+                        .fill(barColor)
                         .frame(height: 5)
                         .scaleEffect(x: ratio, anchor: .leading)
                 }

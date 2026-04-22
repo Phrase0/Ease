@@ -83,7 +83,8 @@ struct CalendarPageView: View {
                             Calendar.current.isDate($0, inSameDayAs: date)
                         } ?? false,
                         isToday: Calendar.current.isDateInToday(date),
-                        hasSymptom: viewModel.hasSymptoms(on: date)
+                        hasSymptom: viewModel.hasSymptoms(on: date),
+                        hasRecord: viewModel.hasRecords(on: date)
                     )
                     .onTapGesture {
                         viewModel.selectedDate = Calendar.current.startOfDay(for: date)
@@ -151,8 +152,15 @@ struct DayCell: View {
     let isSelected: Bool
     let isToday: Bool
     let hasSymptom: Bool
+    let hasRecord: Bool
 
     private let calendar = Calendar.current
+
+    private var dotColor: Color? {
+        if hasSymptom { return .easeSymptom }
+        if hasRecord  { return .easeHealthy }
+        return nil
+    }
 
     var body: some View {
         VStack(spacing: 2) {
@@ -174,9 +182,9 @@ struct DayCell: View {
                 .fontWeight(isToday ? .semibold : .regular)
 
             Circle()
-                .fill(Color.easeSymptom)
+                .fill(dotColor ?? .clear)
                 .frame(width: 4, height: 4)
-                .opacity(hasSymptom ? 1 : 0)
+                .opacity(dotColor != nil ? 1 : 0)
         }
         .frame(height: 40)
     }

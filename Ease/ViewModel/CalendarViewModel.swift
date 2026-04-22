@@ -15,6 +15,7 @@ class CalendarViewModel: ObservableObject {
     @Published var selectedDate: Date? = Calendar.current.startOfDay(for: Date())
     @Published private(set) var daysInMonth: [Date?] = []
     @Published private(set) var symptomDates: Set<Date> = []
+    @Published private(set) var recordDates: Set<Date> = []
 
     private let calendar = Calendar.current
 
@@ -28,9 +29,13 @@ class CalendarViewModel: ObservableObject {
     }
 
     func load(_ records: [MealRecord]) {
-        symptomDates = Set(
-            records.filter(\.hasSymptoms).map { calendar.startOfDay(for: $0.date) }
-        )
+        let allDates = records.map { calendar.startOfDay(for: $0.date) }
+        symptomDates = Set(records.filter(\.hasSymptoms).map { calendar.startOfDay(for: $0.date) })
+        recordDates  = Set(allDates).subtracting(symptomDates)
+    }
+
+    func hasRecords(on date: Date) -> Bool {
+        recordDates.contains(calendar.startOfDay(for: date))
     }
 
     func recordsFor(_ date: Date, in records: [MealRecord]) -> [MealRecord] {
