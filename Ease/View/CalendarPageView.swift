@@ -102,14 +102,13 @@ struct CalendarPageView: View {
         if let date = viewModel.selectedDate {
             let records = viewModel.recordsFor(date, in: store.records)
             if records.isEmpty {
-                VStack(spacing: 8) {
-                    Text("🌿").font(.largeTitle)
+                VStack(spacing: 12) {
+                    Image(systemName: "list.clipboard").font(.largeTitle).foregroundStyle(Color.easeTextSecondary)
                     Text("這天沒有紀錄")
                         .font(.subheadline)
                         .foregroundStyle(Color.easeTextSecondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.top, 32)
             } else {
                 List {
                     Section {
@@ -135,13 +134,12 @@ struct CalendarPageView: View {
             }
         } else {
             VStack(spacing: 8) {
-                Text("👆").font(.largeTitle)
+                Image(systemName: "hand.point.up.fill").font(.largeTitle).foregroundStyle(Color.easeTextSecondary)
                 Text("點選日期查看紀錄")
                     .font(.subheadline)
                     .foregroundStyle(Color.easeTextSecondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.top, 40)
         }
     }
 }

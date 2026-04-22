@@ -10,6 +10,7 @@ import Foundation
 // MARK: - Enums
 
 enum MealType: String, CaseIterable, Hashable {
+    case fasting = "空腹"
     case breakfast = "早餐"
     case brunch = "早午餐"
     case lunch = "午餐"
@@ -55,18 +56,6 @@ enum Symptom: String, CaseIterable, Hashable {
     case acidReflux = "泛酸"
     case vomiting = "嘔吐"
     case other = "其他"
-
-    var emoji: String {
-        switch self {
-        case .bloating:   return "😖"
-        case .burping:    return "🫧"
-        case .hiccup:     return "💨"
-        case .nausea:     return "🤢"
-        case .acidReflux: return "🔥"
-        case .vomiting:   return "🤮"
-        case .other:      return "😶"
-        }
-    }
 
     var weight: Int {
         switch self {
@@ -124,7 +113,7 @@ struct MealRecord: Identifiable, Equatable, Hashable {
     var displayDate: String { date.formatted(date: .long, time: .omitted) }
     var displayTime: String {
         let f = DateFormatter()
-        f.dateFormat = "h:mm"
+        f.dateFormat = "hh:mm"
         return f.string(from: date)
     }
 

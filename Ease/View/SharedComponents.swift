@@ -140,7 +140,7 @@ struct RecordRowView: View {
                 }
 
                 if record.hasSymptoms {
-                    Text(record.symptoms.prefix(3).map { "\($0.emoji) \($0.rawValue)" }.joined(separator: "　"))
+                    Text(record.symptoms.prefix(3).map { $0.rawValue }.joined(separator: "　"))
                         .font(.caption)
                         .foregroundStyle(Color.easeSymptom)
                 } else {

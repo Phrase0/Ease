@@ -89,7 +89,7 @@ struct RecordDetailView: View {
                             .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
                     } else {
                         TagPillRow(
-                            tags: record.symptoms.map { "\($0.emoji) \($0.rawValue)" },
+                            tags: record.symptoms.map { $0.rawValue },
                             foreground: Color.easeSymptom,
                             background: Color.easeSymptom.opacity(0.1)
                         )

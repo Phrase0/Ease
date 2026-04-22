@@ -80,7 +80,7 @@ struct StatsView: View {
 
                     if viewModel.filteredRecords.isEmpty {
                         VStack(spacing: 8) {
-                            Text("🌿").font(.system(size: 44))
+                            Image(systemName: "leaf.fill").font(.system(size: 44)).foregroundStyle(Color.easeTextSecondary)
                             Text("這段時間沒有紀錄")
                                 .font(.subheadline)
                                 .foregroundStyle(Color.easeTextSecondary)
@@ -97,7 +97,7 @@ struct StatsView: View {
                         if !viewModel.activeSymptoms.isEmpty {
                             statsCard("症狀統計") {
                                 ForEach(viewModel.activeSymptoms, id: \.0) { symptom, count in
-                                    StatRow(label: "\(symptom.emoji) \(symptom.rawValue)", count: count, total: total)
+                                    StatRow(label: symptom.rawValue, count: count, total: total)
                                 }
                             }
                         }
@@ -105,7 +105,7 @@ struct StatsView: View {
                         if !viewModel.activeMealTypes.isEmpty {
                             statsCard("餐種分析") {
                                 ForEach(viewModel.activeMealTypes, id: \.0) { type, count in
-                                    StatRow(label: "🍽 \(type.rawValue)", count: count, total: total)
+                                    StatRow(label: type.rawValue, count: count, total: total)
                                 }
                             }
                         }
@@ -158,7 +158,7 @@ struct StatsView: View {
                                             .foregroundStyle(Color.easeTextSecondary)
                                         }
                                         Spacer()
-                                        Text("😖").font(.system(size: 40))
+                                        Image(systemName: "waveform.path.ecg").font(.system(size: 40)).foregroundStyle(Color.easeSymptom)
                                     }
                                     .padding(16)
                                     .background(Color.easeSymptom.opacity(0.08))

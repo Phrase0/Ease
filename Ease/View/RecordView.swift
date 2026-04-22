@@ -122,7 +122,7 @@ struct RecordView: View {
                             spacing: 8
                         ) {
                             ForEach(Symptom.allCases, id: \.self) { symptom in
-                                Button("\(symptom.emoji) \(symptom.rawValue)") {
+                                Button(symptom.rawValue) {
                                     viewModel.toggleSymptom(symptom)
                                 }
                                 .buttonStyle(TagButtonStyle(
