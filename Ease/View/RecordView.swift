@@ -187,8 +187,3 @@ struct RecordView: View {
         dismiss()
     }
 }
-
-#Preview {
-    RecordView()
-        .environmentObject(RecordStore())
-}

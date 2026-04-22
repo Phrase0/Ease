@@ -41,7 +41,3 @@ struct WorstDayDetailView: View {
         }
     }
 }
-
-#Preview {
-    WorstDayDetailView(date: Date(), records: mockRecords)
-}

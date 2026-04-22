@@ -11,6 +11,7 @@ struct HistoryListView: View {
     @EnvironmentObject private var store: RecordStore
     @StateObject private var viewModel = HistoryViewModel()
     @State private var showingNewRecord = false
+    @State private var recordToDelete: MealRecord? = nil
 
     var body: some View {
         NavigationStack {
@@ -34,6 +35,18 @@ struct HistoryListView: View {
                 .navigationDestination(for: MealRecord.self) { record in
                     RecordDetailView(record: record)
                 }
+                .alert("刪除紀錄", isPresented: Binding(
+                    get: { recordToDelete != nil },
+                    set: { if !$0 { recordToDelete = nil } }
+                )) {
+                    Button("刪除", role: .destructive) {
+                        if let r = recordToDelete { store.delete(r) }
+                        recordToDelete = nil
+                    }
+                    Button("取消", role: .cancel) { recordToDelete = nil }
+                } message: {
+                    Text("確定要刪除這筆紀錄？此動作無法復原。")
+                }
         }
         .onAppear { viewModel.load(store.records) }
         .onChange(of: store.records) { viewModel.load(store.records) }
@@ -49,6 +62,13 @@ struct HistoryListView: View {
                         }
                         .listRowBackground(Color.easeCard)
                         .listRowSeparatorTint(Color.easeDivider)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                recordToDelete = record
+                            } label: {
+                                Label("刪除", systemImage: "trash")
+                            }
+                        }
                     }
                 } header: {
                     Text(date, format: .dateTime.month(.wide).day().weekday(.abbreviated))
@@ -61,7 +81,3 @@ struct HistoryListView: View {
     }
 }
 
-#Preview {
-    HistoryListView()
-        .environmentObject(RecordStore())
-}

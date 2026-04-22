@@ -11,6 +11,7 @@ struct CalendarPageView: View {
     @EnvironmentObject private var store: RecordStore
     @StateObject private var viewModel = CalendarViewModel()
     @State private var showMonthPicker = false
+    @State private var recordToDelete: MealRecord? = nil
 
     private let weekdaySymbols = ["日", "一", "二", "三", "四", "五", "六"]
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -43,6 +44,18 @@ struct CalendarPageView: View {
                 MonthYearPickerSheet(currentMonth: viewModel.currentMonth) { selected in
                     viewModel.jumpTo(month: selected)
                 }
+            }
+            .alert("刪除紀錄", isPresented: Binding(
+                get: { recordToDelete != nil },
+                set: { if !$0 { recordToDelete = nil } }
+            )) {
+                Button("刪除", role: .destructive) {
+                    if let r = recordToDelete { store.delete(r) }
+                    recordToDelete = nil
+                }
+                Button("取消", role: .cancel) { recordToDelete = nil }
+            } message: {
+                Text("確定要刪除這筆紀錄？此動作無法復原。")
             }
         }
         .onAppear { viewModel.load(store.records) }
@@ -138,6 +151,13 @@ struct CalendarPageView: View {
                             }
                             .listRowBackground(Color.easeCard)
                             .listRowSeparatorTint(Color.easeDivider)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    recordToDelete = record
+                                } label: {
+                                    Label("刪除", systemImage: "trash")
+                                }
+                            }
                         }
                     } header: {
                         Text(date, format: .dateTime.month(.wide).day().weekday(.wide))
@@ -277,7 +297,3 @@ struct MonthYearPickerSheet: View {
     }
 }
 
-#Preview {
-    CalendarPageView()
-        .environmentObject(RecordStore())
-}
