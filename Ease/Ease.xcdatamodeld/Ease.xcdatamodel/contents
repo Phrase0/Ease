@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
-        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    <entity name="MealRecordEntity" representedClassName="MealRecordEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="mealType" attributeType="String"/>
+        <attribute name="note" attributeType="String"/>
+        <attribute name="diningType" optional="YES" attributeType="String"/>
+        <attribute name="otherSymptom" optional="YES" attributeType="String"/>
+        <attribute name="additionalNote" optional="YES" attributeType="String"/>
+        <attribute name="foodTagsData" optional="YES" attributeType="Binary"/>
+        <attribute name="symptomsData" optional="YES" attributeType="Binary"/>
+        <attribute name="eatingHabitsData" optional="YES" attributeType="Binary"/>
     </entity>
     <elements>
-        <element name="Item" positionX="-63" positionY="-18" width="128" height="44"/>
+        <element name="MealRecordEntity" positionX="-63" positionY="-18" width="128" height="194"/>
     </elements>
 </model>

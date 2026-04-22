@@ -7,19 +7,6 @@
 
 import CoreData
 
-// TODO: Implement when migrating to CoreData.
-//
-// Migration checklist:
-//   1. Define MealRecordEntity in .xcdatamodeld with attributes matching MealRecord fields
-//      (store enum rawValues as String, arrays as Transformable or related entities)
-//   2. Inject NSManagedObjectContext via init
-//   3. fetchAll: NSFetchRequest<MealRecordEntity> → map to [MealRecord]
-//   4. add / update / delete: create/fetch entity, map fields, context.save()
-//   5. Observe NSManagedObjectContextObjectsDidChange to notify RecordStore of external changes
-//
-// Swap in EaseApp.swift:
-//   RecordStore(repository: CoreDataRecordRepository(context: persistenceController.container.viewContext))
-
 class CoreDataRecordRepository: RecordRepositoryProtocol {
     private let context: NSManagedObjectContext
 
@@ -28,19 +15,77 @@ class CoreDataRecordRepository: RecordRepositoryProtocol {
     }
 
     func fetchAll() -> [MealRecord] {
-        // TODO: NSFetchRequest<MealRecordEntity> + map to MealRecord structs
-        return []
+        let request = NSFetchRequest<MealRecordEntity>(entityName: "MealRecordEntity")
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        do {
+            return try context.fetch(request).map { $0.toModel() }
+        } catch {
+            return []
+        }
     }
 
     func add(_ record: MealRecord) {
-        // TODO: create MealRecordEntity, map from record, context.save()
+        let entity = MealRecordEntity(context: context)
+        entity.update(from: record)
+        save()
     }
 
     func update(_ record: MealRecord) {
-        // TODO: fetch entity by record.id, update fields, context.save()
+        guard let entity = fetchEntity(id: record.id) else { return }
+        entity.update(from: record)
+        save()
     }
 
     func delete(_ record: MealRecord) {
-        // TODO: fetch entity by record.id, context.delete(entity), context.save()
+        guard let entity = fetchEntity(id: record.id) else { return }
+        context.delete(entity)
+        save()
+    }
+
+    private func fetchEntity(id: UUID) -> MealRecordEntity? {
+        let request = NSFetchRequest<MealRecordEntity>(entityName: "MealRecordEntity")
+        request.predicate = NSPredicate(format: "id == %@", id as NSUUID)
+        request.fetchLimit = 1
+        return try? context.fetch(request).first
+    }
+
+    private func save() {
+        guard context.hasChanges else { return }
+        try? context.save()
+    }
+}
+
+private extension MealRecordEntity {
+    func update(from record: MealRecord) {
+        id = record.id
+        date = record.date
+        mealType = record.mealType.rawValue
+        note = record.note
+        diningType = record.diningType?.rawValue
+        otherSymptom = record.otherSymptom
+        additionalNote = record.additionalNote
+        foodTagsData = try? JSONEncoder().encode(record.foodTags)
+        symptomsData = try? JSONEncoder().encode(record.symptoms)
+        eatingHabitsData = try? JSONEncoder().encode(record.eatingHabits)
+    }
+
+    func toModel() -> MealRecord {
+        MealRecord(
+            id: id ?? UUID(),
+            date: date ?? Date(),
+            mealType: MealType(rawValue: mealType ?? "") ?? .lunch,
+            foodTags: decoded([FoodTag].self, from: foodTagsData) ?? [],
+            note: note ?? "",
+            diningType: diningType.flatMap { DiningType(rawValue: $0) },
+            eatingHabits: decoded([EatingHabit].self, from: eatingHabitsData) ?? [],
+            symptoms: decoded([Symptom].self, from: symptomsData) ?? [],
+            otherSymptom: otherSymptom,
+            additionalNote: additionalNote
+        )
+    }
+
+    private func decoded<T: Decodable>(_ type: T.Type, from data: Data?) -> T? {
+        guard let data else { return nil }
+        return try? JSONDecoder().decode(type, from: data)
     }
 }
