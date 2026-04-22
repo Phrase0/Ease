@@ -9,7 +9,12 @@ import SwiftUI
 
 struct RecordDetailView: View {
     let record: MealRecord
-    @State private var isEditing = false
+    @EnvironmentObject private var store: RecordStore
+    @State private var editingRecord: MealRecord? = nil
+
+    private var currentRecord: MealRecord {
+        store.records.first(where: { $0.id == record.id }) ?? record
+    }
 
     var body: some View {
         ScrollView {
@@ -17,16 +22,16 @@ struct RecordDetailView: View {
 
                 // Header
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(record.displayDate)
+                    Text(currentRecord.displayDate)
                         .font(.title3.weight(.semibold))
                         .foregroundStyle(Color.easeTextPrimary)
-                    Text("\(record.displayTime) \(record.displayAmPm)")
+                    Text("\(currentRecord.displayTime) \(currentRecord.displayAmPm)")
                         .font(.callout.monospacedDigit())
                         .foregroundStyle(Color.easeTextSecondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .overlay(alignment: .topTrailing) {
-                    Text(record.mealType.rawValue)
+                    Text(currentRecord.mealType.rawValue)
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
@@ -39,28 +44,28 @@ struct RecordDetailView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
                 // Food
-                if !record.foodTags.isEmpty || !record.note.isEmpty {
+                if !currentRecord.foodTags.isEmpty || !currentRecord.note.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("吃了什麼")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(Color.easeTextSecondary)
                             .tracking(0.8)
 
-                        if !record.foodTags.isEmpty {
+                        if !currentRecord.foodTags.isEmpty {
                             TagPillRow(
-                                tags: record.foodTags.map(\.rawValue),
+                                tags: currentRecord.foodTags.map(\.rawValue),
                                 foreground: Color.easeAccent,
                                 background: Color.easeAccent.opacity(0.1)
                             )
                         }
 
-                        if !record.note.isEmpty {
-                            Text(record.note)
+                        if !currentRecord.note.isEmpty {
+                            Text(currentRecord.note)
                                 .font(.subheadline)
                                 .foregroundStyle(Color.easeTextPrimary)
                         }
 
-                        if let diningType = record.diningType {
+                        if let diningType = currentRecord.diningType {
                             HStack(spacing: 4) {
                                 Image(systemName: "bag")
                                     .font(.caption)
@@ -76,6 +81,26 @@ struct RecordDetailView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
 
+                // Eating Habits
+                if !currentRecord.eatingHabits.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("進食習慣")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.easeTextSecondary)
+                            .tracking(0.8)
+
+                        TagPillRow(
+                            tags: currentRecord.eatingHabits.map(\.rawValue),
+                            foreground: Color.easeTextSecondary,
+                            background: Color.easeTextSecondary.opacity(0.1)
+                        )
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+                    .background(Color.easeCard)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                }
+
                 // Symptoms
                 VStack(alignment: .leading, spacing: 12) {
                     Text("症狀")
@@ -83,17 +108,17 @@ struct RecordDetailView: View {
                         .foregroundStyle(Color.easeTextSecondary)
                         .tracking(0.8)
 
-                    if record.symptoms.isEmpty {
+                    if currentRecord.symptoms.isEmpty {
                         Text("無症狀")
                             .font(.callout)
                             .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
                     } else {
                         TagPillRow(
-                            tags: record.symptoms.map { $0.rawValue },
+                            tags: currentRecord.symptoms.map { $0.rawValue },
                             foreground: Color.easeSymptom,
                             background: Color.easeSymptom.opacity(0.1)
                         )
-                        if let other = record.otherSymptom, !other.isEmpty {
+                        if let other = currentRecord.otherSymptom, !other.isEmpty {
                             Text("其他：\(other)")
                                 .font(.caption)
                                 .foregroundStyle(Color.easeTextSecondary)
@@ -106,7 +131,7 @@ struct RecordDetailView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
                 // Additional notes
-                if let note = record.additionalNote, !note.isEmpty {
+                if let note = currentRecord.additionalNote, !note.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("備註")
                             .font(.caption.weight(.semibold))
@@ -132,12 +157,12 @@ struct RecordDetailView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("編輯") { isEditing = true }
+                Button("編輯") { editingRecord = currentRecord }
                     .foregroundStyle(Color.easeAccent)
             }
         }
-        .sheet(isPresented: $isEditing) {
-            RecordView(existingRecord: record)
+        .sheet(item: $editingRecord) { rec in
+            RecordView(existingRecord: rec)
         }
     }
 }

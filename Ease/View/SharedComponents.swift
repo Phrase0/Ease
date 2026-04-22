@@ -73,7 +73,45 @@ struct FormSection<Content: View>: View {
     }
 }
 
-// MARK: - Horizontal Tag Row (Detail View)
+// MARK: - Flow Layout
+
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 6
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        layout(subviews: subviews, in: proposal.width ?? 0).size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let result = layout(subviews: subviews, in: bounds.width)
+        for (subview, point) in zip(subviews, result.origins) {
+            subview.place(at: CGPoint(x: bounds.minX + point.x, y: bounds.minY + point.y), proposal: .unspecified)
+        }
+    }
+
+    private func layout(subviews: Subviews, in maxWidth: CGFloat) -> (origins: [CGPoint], size: CGSize) {
+        var origins: [CGPoint] = []
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var lineHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x + size.width > maxWidth, x > 0 {
+                x = 0
+                y += lineHeight + spacing
+                lineHeight = 0
+            }
+            origins.append(CGPoint(x: x, y: y))
+            x += size.width + spacing
+            lineHeight = max(lineHeight, size.height)
+        }
+
+        return (origins, CGSize(width: maxWidth, height: y + lineHeight))
+    }
+}
+
+// MARK: - Wrapping Tag Row (Detail View)
 
 struct TagPillRow: View {
     let tags: [String]
@@ -81,17 +119,15 @@ struct TagPillRow: View {
     let background: Color
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
-                ForEach(tags, id: \.self) { tag in
-                    Text(tag)
-                        .font(.caption.weight(.medium))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(background)
-                        .foregroundStyle(foreground)
-                        .clipShape(Capsule())
-                }
+        FlowLayout(spacing: 6) {
+            ForEach(tags, id: \.self) { tag in
+                Text(tag)
+                    .font(.caption.weight(.medium))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(background)
+                    .foregroundStyle(foreground)
+                    .clipShape(Capsule())
             }
         }
     }

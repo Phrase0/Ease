@@ -58,11 +58,11 @@ class RecordFormViewModel: ObservableObject {
             id: existingRecord?.id ?? UUID(),
             date: date,
             mealType: selectedMealType,
-            foodTags: Array(selectedFoodTags),
+            foodTags: FoodTag.allCases.filter { selectedFoodTags.contains($0) },
             note: foodNote,
             diningType: selectedDiningType,
-            eatingHabits: Array(selectedEatingHabits),
-            symptoms: Array(selectedSymptoms),
+            eatingHabits: EatingHabit.allCases.filter { selectedEatingHabits.contains($0) },
+            symptoms: Symptom.allCases.filter { selectedSymptoms.contains($0) },
             otherSymptom: otherSymptomText.isEmpty ? nil : otherSymptomText,
             additionalNote: additionalNote.isEmpty ? nil : additionalNote
         )
