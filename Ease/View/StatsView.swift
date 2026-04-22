@@ -229,15 +229,16 @@ struct StatRow: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(count > 0 ? Color.easeAccent : Color.easeTextSecondary)
             }
-            Capsule()
-                .fill(Color.easeDivider)
-                .frame(height: 5)
-                .overlay(alignment: .leading) {
-                    Capsule()
-                        .fill(barColor)
-                        .frame(height: 5)
-                        .scaleEffect(x: ratio, anchor: .leading)
-                }
+            GeometryReader { geo in
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color.easeDivider)
+                    .overlay(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(barColor)
+                            .frame(width: geo.size.width * ratio)
+                    }
+            }
+            .frame(height: 6)
         }
         .padding(.vertical, 7)
     }

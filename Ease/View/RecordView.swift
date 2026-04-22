@@ -136,7 +136,7 @@ struct RecordView: View {
                                     isSelected: isSelected,
                                     selectedColor: Color.easeAccent
                                 ))
-                                .frame(maxWidth: .infinity)
+                                .frame(maxWidtㄕ .infinity)
                             }
                         }
                     }
