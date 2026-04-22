@@ -53,29 +53,46 @@ struct HistoryListView: View {
     }
 
     private var recordList: some View {
-        List {
-            ForEach(viewModel.groupedRecords, id: \.0) { date, records in
-                Section {
-                    ForEach(records) { record in
-                        NavigationLink(value: record) {
-                            RecordRowView(record: record)
-                        }
-                        .listRowBackground(Color.easeCard)
-                        .listRowSeparatorTint(Color.easeDivider)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button {
-                                withAnimation(.none) { recordToDelete = record }
-                            } label: {
-                                Label("刪除", systemImage: "trash")
+        Group {
+            if viewModel.groupedRecords.isEmpty {
+                VStack(spacing: 12) {
+                    Image(systemName: "list.clipboard")
+                        .font(.largeTitle)
+                        .foregroundStyle(Color.easeTextSecondary)
+                    Text("還沒有紀錄")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.easeTextSecondary)
+                    Text("請按右上角 + 新增")
+                        .font(.caption)
+                        .foregroundStyle(Color.easeTextSecondary.opacity(0.7))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                List {
+                    ForEach(viewModel.groupedRecords, id: \.0) { date, records in
+                        Section {
+                            ForEach(records) { record in
+                                NavigationLink(value: record) {
+                                    RecordRowView(record: record)
+                                }
+                                .listRowBackground(Color.easeCard)
+                                .listRowSeparatorTint(Color.easeDivider)
+                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                    Button {
+                                        withAnimation(.none) { recordToDelete = record }
+                                    } label: {
+                                        Label("刪除", systemImage: "trash")
+                                    }
+                                    .tint(.easeAccent)
+                                }
                             }
-                            .tint(.easeAccent)
+                        } header: {
+                            Text(date, format: .dateTime.month(.wide).day().weekday(.abbreviated))
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Color.easeTextSecondary)
+                                .textCase(nil)
                         }
                     }
-                } header: {
-                    Text(date, format: .dateTime.month(.wide).day().weekday(.abbreviated))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color.easeTextSecondary)
-                        .textCase(nil)
                 }
             }
         }
