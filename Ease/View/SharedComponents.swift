@@ -40,6 +40,7 @@ struct TagButtonStyle: ButtonStyle {
             )
             .clipShape(Capsule())
             .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: isSelected)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }

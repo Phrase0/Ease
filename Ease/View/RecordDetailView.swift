@@ -96,8 +96,10 @@ struct RecordDetailView: View {
                 if let diningType = currentRecord.diningType {
                     FormSection("用餐方式") {
                         HStack(spacing: 4) {
-                            Image(systemName: "bag")
+                            Image(systemName: "fork.knife")
                                 .font(.caption)
+                                .foregroundStyle(Color.easeAccent)
+                                .padding(.leading, 2)
                             Text(diningType.rawValue)
                                 .font(.subheadline)
                         }
