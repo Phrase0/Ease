@@ -10,6 +10,7 @@ import SwiftUI
 struct StatsView: View {
     @EnvironmentObject private var store: RecordStore
     @StateObject private var viewModel = StatsViewModel()
+    @State private var showingShareSheet = false
 
     var body: some View {
         NavigationStack {
@@ -183,8 +184,49 @@ struct StatsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.easeBg, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button {
+                            viewModel.prepareAllExport()
+                            showingShareSheet = true
+                        } label: {
+                            Label("全部匯出", systemImage: "square.and.arrow.up.on.square")
+                        }
+                        Divider()
+                        Button {
+                            viewModel.prepareRawExport()
+                            showingShareSheet = true
+                        } label: {
+                            Label("原始紀錄", systemImage: "list.clipboard")
+                        }
+                        Button {
+                            viewModel.prepareSummaryExport()
+                            showingShareSheet = true
+                        } label: {
+                            Label("統計摘要", systemImage: "chart.bar")
+                        }
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .disabled(viewModel.filteredRecords.isEmpty)
+                }
+            }
             .sheet(item: $viewModel.worstDaySheet) { item in
                 WorstDayDetailView(date: item.date, records: item.records)
+            }
+            .shareSheet(
+                isPresented: $showingShareSheet,
+                activityItems: { viewModel.currentShareItems },
+                excludedTypes: UIActivity.ActivityType.defaultExcludedTypes,
+                onComplete: { completed in
+                    if completed { viewModel.handleExportSuccess() }
+                }
+            )
+            .alert("匯出成功", isPresented: $viewModel.showingExportSuccessAlert) {
+                Button("確定") { }
+            } message: {
+                Text("報表已成功匯出")
             }
         }
         .onAppear { viewModel.updateFilter(from: store.records) }
