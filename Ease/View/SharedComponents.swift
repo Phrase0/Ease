@@ -12,7 +12,7 @@ import SwiftUI
 extension Color {
     static let easeBg            = Color(red: 0.953, green: 0.937, blue: 0.914) // warm cream 溫暖的米色背景
     static let easeCard          = Color(red: 0.984, green: 0.973, blue: 0.959) // lighter warm white 較淺的暖白色（卡片用）
-    static let easeAccent        = Color(red: 0.808, green: 0.478, blue: 0.227) // terracotta 陶土色（重點色）
+    static let easeAccent        = Color(red: 0.800, green: 0.490, blue: 0.278) // terracotta 陶土色（重點色）
     static let easeTextPrimary   = Color(red: 0.192, green: 0.157, blue: 0.125) // warm dark brown 主要文字（暖深棕）
     static let easeTextSecondary = Color(red: 0.510, green: 0.459, blue: 0.408) // medium warm brown 次要文字（中等暖棕）
     static let easeSymptom       = Color(red: 0.671, green: 0.416, blue: 0.329) // deep brick-red 症狀色（深磚紅）
