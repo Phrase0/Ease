@@ -187,3 +187,13 @@ struct RecordView: View {
         dismiss()
     }
 }
+
+#Preview("新增") {
+    RecordView()
+        .environmentObject(RecordStore())
+}
+
+#Preview("編輯") {
+    RecordView(existingRecord: mockRecords[0])
+        .environmentObject(RecordStore())
+}

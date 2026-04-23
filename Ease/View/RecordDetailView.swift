@@ -179,3 +179,10 @@ struct RecordDetailView: View {
         }
     }
 }
+
+#Preview {
+    NavigationStack {
+        RecordDetailView(record: mockRecords[0])
+    }
+    .environmentObject(RecordStore())
+}

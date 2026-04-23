@@ -41,3 +41,8 @@ struct WorstDayDetailView: View {
         }
     }
 }
+
+#Preview {
+    WorstDayDetailView(date: mockRecords[0].date, records: Array(mockRecords.prefix(3)))
+        .environmentObject(RecordStore())
+}

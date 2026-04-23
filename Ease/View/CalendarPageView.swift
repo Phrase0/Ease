@@ -298,3 +298,7 @@ struct MonthYearPickerSheet: View {
     }
 }
 
+#Preview {
+    CalendarPageView()
+        .environmentObject(RecordStore())
+}

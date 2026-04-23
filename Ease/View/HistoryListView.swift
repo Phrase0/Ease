@@ -99,3 +99,7 @@ struct HistoryListView: View {
     }
 }
 
+#Preview {
+    HistoryListView()
+        .environmentObject(RecordStore())
+}

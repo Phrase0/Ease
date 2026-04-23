@@ -243,3 +243,8 @@ struct StatRow: View {
         .padding(.vertical, 7)
     }
 }
+
+#Preview {
+    StatsView()
+        .environmentObject(RecordStore())
+}
