@@ -131,7 +131,7 @@ struct CalendarPageView: View {
     @ViewBuilder
     private var dayRecordsList: some View {
         if let date = viewModel.selectedDate {
-            let records = viewModel.recordsFor(date, in: store.records)
+            let records = viewModel.recordsFor(date)
             if records.isEmpty {
                 VStack(spacing: 12) {
                     Image(systemName: "list.clipboard").font(.largeTitle).foregroundStyle(Color.easeTextSecondary)

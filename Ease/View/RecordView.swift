@@ -169,22 +169,15 @@ struct RecordView: View {
                         .foregroundStyle(Color.easeTextSecondary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("儲存", action: save)
-                        .foregroundStyle(Color.easeAccent)
-                        .fontWeight(.semibold)
+                    Button("儲存") {
+                        viewModel.save(to: store)
+                        dismiss()
+                    }
+                    .foregroundStyle(Color.easeAccent)
+                    .fontWeight(.semibold)
                 }
             }
         }
-    }
-
-    private func save() {
-        let record = viewModel.buildRecord()
-        if existingRecord != nil {
-            store.update(record)
-        } else {
-            store.add(record)
-        }
-        dismiss()
     }
 }
 

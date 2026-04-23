@@ -53,8 +53,8 @@ class RecordFormViewModel: ObservableObject {
         }
     }
 
-    func buildRecord() -> MealRecord {
-        MealRecord(
+    func save(to store: RecordStore) {
+        let record = MealRecord(
             id: existingRecord?.id ?? UUID(),
             date: date,
             mealType: selectedMealType,
@@ -66,5 +66,10 @@ class RecordFormViewModel: ObservableObject {
             otherSymptom: otherSymptomText.isEmpty ? nil : otherSymptomText,
             additionalNote: additionalNote.isEmpty ? nil : additionalNote
         )
+        if existingRecord != nil {
+            store.update(record)
+        } else {
+            store.add(record)
+        }
     }
 }
