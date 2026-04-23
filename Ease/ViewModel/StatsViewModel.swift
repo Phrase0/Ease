@@ -42,10 +42,6 @@ class StatsViewModel: ObservableObject {
 
     private let calendar = Calendar.current
 
-    func load(_ records: [MealRecord]) {
-        updateFilter(from: records)
-    }
-
     func updateFilter(from records: [MealRecord]) {
         let now = Date()
         let filtered: [MealRecord]

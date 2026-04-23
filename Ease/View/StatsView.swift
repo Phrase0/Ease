@@ -181,7 +181,7 @@ struct StatsView: View {
                 WorstDayDetailView(date: item.date, records: item.records)
             }
         }
-        .onAppear { viewModel.load(store.records) }
+        .onAppear { viewModel.updateFilter(from: store.records) }
         .onChange(of: store.records)     { viewModel.updateFilter(from: store.records) }
         .onChange(of: viewModel.selectedRange) { viewModel.updateFilter(from: store.records) }
         .onChange(of: viewModel.customStart)   { viewModel.updateFilter(from: store.records) }
