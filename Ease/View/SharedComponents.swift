@@ -162,7 +162,7 @@ struct TagPillRow: View {
     let background: Color
 
     var body: some View {
-        FlowLayout(spacing: 6) {
+        FlowLayout(spacing: 8) {
             ForEach(tags, id: \.self) { tag in
                 Text(tag)
                     .font(.subheadline)
