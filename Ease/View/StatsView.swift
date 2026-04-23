@@ -14,10 +14,10 @@ struct StatsView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 12) {
 
-                    // Time range picker
+                // Header: always visible, no scroll needed
+                VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Menu {
                             ForEach(StatsViewModel.TimeRange.allCases, id: \.self) { range in
@@ -84,101 +84,103 @@ struct StatsView: View {
                         .background(Color.easeCard)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
 
-                    if viewModel.filteredRecords.isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: "list.clipboard").font(.largeTitle).foregroundStyle(Color.easeTextSecondary)
-                            Text("這段時間沒有紀錄")
-                                .font(.subheadline)
-                                .foregroundStyle(Color.easeTextSecondary)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 60)
-                    } else {
+                if viewModel.filteredRecords.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "list.clipboard").font(.largeTitle).foregroundStyle(Color.easeTextSecondary)
+                        Text("這段時間沒有紀錄")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.easeTextSecondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
                         let total = viewModel.filteredRecords.count
 
                         VStack(alignment: .leading, spacing: 12) {
                             if let worst = viewModel.worstDay {
-                            Button {
-                                viewModel.worstDaySheet = viewModel.worstDay
-                            } label: {
-                                VStack(alignment: .leading, spacing: 12) {
-                                    Text("最嚴重的一天")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(Color.easeSymptom)
-                                        .tracking(0.8)
-                                    HStack(alignment: .center) {
-                                        VStack(alignment: .leading, spacing: 6) {
-                                            Text(worst.date, format: .dateTime.month(.wide).day().weekday(.wide))
-                                                .font(.title3.weight(.semibold))
-                                                .foregroundStyle(Color.easeTextPrimary)
-                                            HStack(spacing: 12) {
-                                                Label("\(worst.records.count) 筆", systemImage: "note.text")
-                                                Label("嚴重度 \(worst.records.flatMap(\.symptoms).map(\.weight).reduce(0, +))",
-                                                      systemImage: "waveform.path.ecg")
-                                            }
-                                            .font(.caption)
-                                            .foregroundStyle(Color.easeTextSecondary)
-                                        }
-                                        Spacer()
-                                        Image(systemName: "waveform.path.ecg")
-                                            .font(.system(size: 40))
+                                Button {
+                                    viewModel.worstDaySheet = viewModel.worstDay
+                                } label: {
+                                    VStack(alignment: .leading, spacing: 12) {
+                                        Text("最嚴重的一天")
+                                            .font(.caption.weight(.semibold))
                                             .foregroundStyle(Color.easeSymptom)
+                                            .tracking(0.8)
+                                        HStack(alignment: .center) {
+                                            VStack(alignment: .leading, spacing: 6) {
+                                                Text(worst.date, format: .dateTime.month(.wide).day().weekday(.wide))
+                                                    .font(.title3.weight(.semibold))
+                                                    .foregroundStyle(Color.easeTextPrimary)
+                                                HStack(spacing: 12) {
+                                                    Label("\(worst.records.count) 筆", systemImage: "note.text")
+                                                    Label("嚴重度 \(worst.records.flatMap(\.symptoms).map(\.weight).reduce(0, +))",
+                                                          systemImage: "waveform.path.ecg")
+                                                }
+                                                .font(.caption)
+                                                .foregroundStyle(Color.easeTextSecondary)
+                                            }
+                                            Spacer()
+                                            Image(systemName: "waveform.path.ecg")
+                                                .font(.system(size: 40))
+                                                .foregroundStyle(Color.easeSymptom)
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(16)
+                                    .background(Color.easeSymptom.opacity(0.08))
+                                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                                }
+                                .buttonStyle(.plain)
+                            }
+
+                            if !viewModel.activeSymptoms.isEmpty {
+                                FormSection("症狀統計") {
+                                    ForEach(viewModel.activeSymptoms, id: \.0) { symptom, count in
+                                        StatRow(label: symptom.rawValue, count: count, total: total)
                                     }
                                 }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(16)
-                                .background(Color.easeSymptom.opacity(0.08))
-                                .clipShape(RoundedRectangle(cornerRadius: 14))
                             }
-                            .buttonStyle(.plain)
-                        }
 
-                        if !viewModel.activeSymptoms.isEmpty {
-                            FormSection("症狀統計") {
-                                ForEach(viewModel.activeSymptoms, id: \.0) { symptom, count in
-                                    StatRow(label: symptom.rawValue, count: count, total: total)
+                            if !viewModel.activeEatingHabits.isEmpty {
+                                FormSection("進食習慣") {
+                                    ForEach(viewModel.activeEatingHabits, id: \.0) { habit, count in
+                                        StatRow(label: habit.rawValue, count: count, total: total)
+                                    }
+                                }
+                            }
+
+                            if !viewModel.activeMealTypes.isEmpty {
+                                FormSection("餐種分析") {
+                                    ForEach(viewModel.activeMealTypes, id: \.0) { type, count in
+                                        StatRow(label: type.rawValue, count: count, total: total)
+                                    }
+                                }
+                            }
+
+                            if !viewModel.activeFoodTags.isEmpty {
+                                FormSection("吃了什麼") {
+                                    ForEach(viewModel.activeFoodTags, id: \.0) { tag, count in
+                                        StatRow(label: tag.rawValue, count: count, total: total)
+                                    }
+                                }
+                            }
+
+                            if !viewModel.activeDiningTypes.isEmpty {
+                                FormSection("用餐方式") {
+                                    ForEach(viewModel.activeDiningTypes, id: \.0) { type, count in
+                                        StatRow(label: type.rawValue, count: count, total: total)
+                                    }
                                 }
                             }
                         }
-
-                        if !viewModel.activeEatingHabits.isEmpty {
-                            FormSection("進食習慣") {
-                                ForEach(viewModel.activeEatingHabits, id: \.0) { habit, count in
-                                    StatRow(label: habit.rawValue, count: count, total: total)
-                                }
-                            }
-                        }
-
-                        if !viewModel.activeMealTypes.isEmpty {
-                            FormSection("餐種分析") {
-                                ForEach(viewModel.activeMealTypes, id: \.0) { type, count in
-                                    StatRow(label: type.rawValue, count: count, total: total)
-                                }
-                            }
-                        }
-
-                        if !viewModel.activeFoodTags.isEmpty {
-                            FormSection("吃了什麼") {
-                                ForEach(viewModel.activeFoodTags, id: \.0) { tag, count in
-                                    StatRow(label: tag.rawValue, count: count, total: total)
-                                }
-                            }
-                        }
-
-                        if !viewModel.activeDiningTypes.isEmpty {
-                            FormSection("用餐方式") {
-                                ForEach(viewModel.activeDiningTypes, id: \.0) { type, count in
-                                    StatRow(label: type.rawValue, count: count, total: total)
-                                }
-                            }
-                        }
-                        }
-                        .padding(.top, 8)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 32)
                     }
                 }
-                .padding(16)
-                .padding(.bottom, 32)
             }
             .background(Color.easeBg.ignoresSafeArea())
             .navigationTitle("不適分析")
