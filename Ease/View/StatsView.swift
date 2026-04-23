@@ -42,6 +42,7 @@ struct StatsView: View {
                             Text("共 \(viewModel.filteredRecords.count) 筆紀錄")
                                 .font(.caption)
                                 .foregroundStyle(Color.easeTextSecondary)
+                                .padding(.trailing, 4)
                         }
                     }
 

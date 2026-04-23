@@ -157,6 +157,7 @@ struct RecordRowView: View {
                 Text(record.displayAmPm)
                     .font(.caption2)
                     .foregroundStyle(Color.easeTextSecondary)
+                    .padding(.leading, 1)
             }
             .frame(width: 40, alignment: .leading)
 
@@ -190,10 +191,12 @@ struct RecordRowView: View {
                                 .foregroundStyle(Color.easeTextSecondary)
                         }
                     }
+                    .padding(.leading, 3)
                 } else {
                     Text("無症狀")
                         .font(.subheadline)
                         .foregroundStyle(Color.easeTextSecondary.opacity(0.45))
+                        .padding(.leading, 3)
                 }
 
                 // Row 3: food — supporting info with +N
@@ -209,6 +212,7 @@ struct RecordRowView: View {
                                 .foregroundStyle(Color.easeTextSecondary.opacity(0.6))
                         }
                     }
+                    .padding(.leading, 3)
                 }
             }
 
