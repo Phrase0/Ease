@@ -64,21 +64,13 @@ struct RecordView: View {
 
                     // MARK: Symptoms
                     FormSection("症狀") {
-                        LazyVGrid(
-                            columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
-                            alignment: .leading,
-                            spacing: 8
-                        ) {
-                            ForEach(Symptom.allCases, id: \.self) { symptom in
-                                Button(symptom.rawValue) {
-                                    viewModel.toggleSymptom(symptom)
-                                }
-                                .buttonStyle(TagButtonStyle(
-                                    isSelected: viewModel.selectedSymptoms.contains(symptom),
-                                    selectedColor: Color.easeAccent
-                                ))
-                            }
-                        }
+                        EqualTagGrid(
+                            items: Symptom.allCases,
+                            label: \.rawValue,
+                            isSelected: { viewModel.selectedSymptoms.contains($0) },
+                            onTap: { viewModel.toggleSymptom($0) },
+                            selectedColor: .easeAccent
+                        )
 
                         if viewModel.selectedSymptoms.contains(.other) {
                             Divider().overlay(Color.easeDivider).padding(.top, 4)
@@ -91,30 +83,22 @@ struct RecordView: View {
 
                     // MARK: Eating Habits
                     FormSection("進食習慣") {
-                        LazyVGrid(
-                            columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
-                            alignment: .leading,
-                            spacing: 8
-                        ) {
-                            ForEach(EatingHabit.allCases, id: \.self) { habit in
-                                Button(habit.rawValue) { viewModel.toggleEatingHabit(habit) }
-                                    .buttonStyle(TagButtonStyle(isSelected: viewModel.selectedEatingHabits.contains(habit)))
-                            }
-                        }
+                        EqualTagGrid(
+                            items: EatingHabit.allCases,
+                            label: \.rawValue,
+                            isSelected: { viewModel.selectedEatingHabits.contains($0) },
+                            onTap: { viewModel.toggleEatingHabit($0) }
+                        )
                     }
 
                     // MARK: Food Tags
                     FormSection("吃了什麼") {
-                        LazyVGrid(
-                            columns: [GridItem(.adaptive(minimum: 68), spacing: 8)],
-                            alignment: .leading,
-                            spacing: 8
-                        ) {
-                            ForEach(FoodTag.allCases, id: \.self) { tag in
-                                Button(tag.rawValue) { viewModel.toggleFoodTag(tag) }
-                                    .buttonStyle(TagButtonStyle(isSelected: viewModel.selectedFoodTags.contains(tag)))
-                            }
-                        }
+                        EqualTagGrid(
+                            items: FoodTag.allCases,
+                            label: \.rawValue,
+                            isSelected: { viewModel.selectedFoodTags.contains($0) },
+                            onTap: { viewModel.toggleFoodTag($0) }
+                        )
 
                         Divider().overlay(Color.easeDivider).padding(.top, 4)
 
@@ -126,19 +110,14 @@ struct RecordView: View {
 
                     // MARK: Dining Type
                     FormSection("用餐方式") {
-                        HStack(spacing: 8) {
-                            ForEach(DiningType.allCases, id: \.self) { type in
-                                let isSelected = viewModel.selectedDiningType == type
-                                Button(type.rawValue) {
-                                    viewModel.selectedDiningType = isSelected ? nil : type
-                                }
-                                .buttonStyle(TagButtonStyle(
-                                    isSelected: isSelected,
-                                    selectedColor: Color.easeAccent
-                                ))
-                                .frame(maxWidth: .infinity)
+                        EqualTagGrid(
+                            items: DiningType.allCases,
+                            label: \.rawValue,
+                            isSelected: { viewModel.selectedDiningType == $0 },
+                            onTap: { type in
+                                viewModel.selectedDiningType = viewModel.selectedDiningType == type ? nil : type
                             }
-                        }
+                        )
                     }
 
                     // MARK: Additional Notes

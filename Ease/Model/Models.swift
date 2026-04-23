@@ -21,8 +21,8 @@ enum MealType: String, CaseIterable, Hashable, Codable {
 }
 
 enum FoodTag: String, CaseIterable, Hashable, Codable {
-    case rice = "飯"
-    case noodle = "麵"
+    case rice = "飯類"
+    case noodle = "麵類"
     case bread = "麵包"
     case sweet = "甜食"
     case coffee = "咖啡"
@@ -38,8 +38,9 @@ enum FoodTag: String, CaseIterable, Hashable, Codable {
 enum EatingHabit: String, CaseIterable, Hashable, Codable {
     case eatTooFast = "吃太快"
     case talkingWhileEating = "一直說話"
-    case noRestAfterMeal = "無休息"
     case sleepingOnStomach = "趴睡"
+    case noRestAfterMeal = "無休息"
+    
 }
 
 enum DiningType: String, CaseIterable, Hashable, Codable {
@@ -52,7 +53,7 @@ enum Symptom: String, CaseIterable, Hashable, Codable {
     case bloating = "脹氣"
     case burping = "打飽嗝"
     case hiccup = "打嗝"
-    case nausea = "想吐"
+    case nausea = "噁心"
     case acidReflux = "泛酸"
     case vomiting = "嘔吐"
     case other = "其他"

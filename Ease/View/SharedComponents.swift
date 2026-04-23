@@ -110,6 +110,50 @@ struct FlowLayout: Layout {
     }
 }
 
+// MARK: - Equal Tag Grid (3-per-row, equal width, last row padded)
+
+struct EqualTagGrid<Item: Hashable>: View {
+    let items: [Item]
+    let label: (Item) -> String
+    let isSelected: (Item) -> Bool
+    let onTap: (Item) -> Void
+    var selectedColor: Color = .easeAccent
+
+    private let columns = 3
+    private let spacing: CGFloat = 8
+
+    private var rows: [[Item?]] {
+        let padded = ((items.count + columns - 1) / columns) * columns
+        return stride(from: 0, to: padded, by: columns).map { start in
+            (0..<columns).map { offset -> Item? in
+                let i = start + offset
+                return i < items.count ? items[i] : nil
+            }
+        }
+    }
+
+    var body: some View {
+        VStack(spacing: spacing) {
+            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                HStack(spacing: spacing) {
+                    ForEach(Array(row.enumerated()), id: \.offset) { _, item in
+                        if let item {
+                            Button(label(item)) { onTap(item) }
+                                .buttonStyle(TagButtonStyle(
+                                    isSelected: isSelected(item),
+                                    selectedColor: selectedColor
+                                ))
+                                .frame(maxWidth: .infinity)
+                        } else {
+                            Color.clear.frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Wrapping Tag Row (Detail View)
 
 struct TagPillRow: View {
