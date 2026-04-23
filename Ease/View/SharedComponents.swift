@@ -31,7 +31,7 @@ struct TagButtonStyle: ButtonStyle {
             .font(.subheadline)
             .lineLimit(1)
             .padding(.horizontal, 12)
-            .padding(.vertical, 7)
+            .padding(.vertical, 8)
             .background(isSelected ? selectedColor : Color.easeBg)
             .foregroundStyle(isSelected ? Color.white : Color.easeTextSecondary)
             .overlay(
@@ -148,9 +148,9 @@ struct RecordRowView: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
+        HStack(alignment: .top, spacing: 12) {
             // Time
-            VStack(alignment: .leading, spacing: 1) {
+            VStack(alignment: .leading) {
                 Text(record.displayTime)
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(Color.easeTextSecondary)
@@ -159,7 +159,6 @@ struct RecordRowView: View {
                     .foregroundStyle(Color.easeTextSecondary)
             }
             .frame(width: 40, alignment: .leading)
-            .padding(.top, 1)
 
             VStack(alignment: .leading, spacing: 8) {
                 // Row 1: meal type + dining type
@@ -167,7 +166,7 @@ struct RecordRowView: View {
                     Text(record.mealType.rawValue)
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
+                        .padding(.vertical, 4)
                         .background(Color.easeAccent.opacity(0.12))
                         .foregroundStyle(Color.easeAccent)
                         .clipShape(Capsule())

@@ -161,8 +161,8 @@ struct CalendarPageView: View {
                             }
                         }
                     } header: {
-                        Text(date, format: .dateTime.month(.wide).day().weekday(.wide))
-                            .font(.caption.weight(.semibold))
+                        Text(date, format: .dateTime.month(.wide).day().weekday(.abbreviated))
+                            .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Color.easeTextSecondary)
                             .textCase(nil)
                     }

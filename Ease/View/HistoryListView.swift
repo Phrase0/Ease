@@ -94,6 +94,7 @@ struct HistoryListView: View {
                         }
                     }
                 }
+                .listSectionSpacing(.compact)
             }
         }
     }

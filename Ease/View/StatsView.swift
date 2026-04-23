@@ -14,7 +14,7 @@ struct StatsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 12) {
 
                     // Time range picker
                     HStack {
@@ -31,7 +31,7 @@ struct StatsView: View {
                             }
                             .frame(minWidth: 100)
                             .foregroundStyle(Color.easeAccent)
-                            .padding(.horizontal, 14)
+                            .padding(.horizontal, 16)
                             .padding(.vertical, 8)
                             .background(Color.easeAccent.opacity(0.1))
                             .clipShape(Capsule())
@@ -94,6 +94,40 @@ struct StatsView: View {
 
                         let total = viewModel.filteredRecords.count
 
+                        if let worst = viewModel.worstDay {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("最嚴重的一天")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(Color.easeTextSecondary)
+                                    .tracking(0.8)
+
+                                Button {
+                                    viewModel.worstDaySheet = viewModel.worstDay
+                                } label: {
+                                    HStack(alignment: .center) {
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            Text(worst.date, format: .dateTime.month(.wide).day().weekday(.wide))
+                                                .font(.title3.weight(.semibold))
+                                                .foregroundStyle(Color.easeTextPrimary)
+                                            HStack(spacing: 12) {
+                                                Label("\(worst.records.count) 筆", systemImage: "note.text")
+                                                Label("嚴重度 \(worst.records.flatMap(\.symptoms).map(\.weight).reduce(0, +))",
+                                                      systemImage: "waveform.path.ecg")
+                                            }
+                                            .font(.caption)
+                                            .foregroundStyle(Color.easeTextSecondary)
+                                        }
+                                        Spacer()
+                                        Image(systemName: "waveform.path.ecg").font(.system(size: 40)).foregroundStyle(Color.easeSymptom)
+                                    }
+                                    .padding(16)
+                                    .background(Color.easeSymptom.opacity(0.08))
+                                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+
                         if !viewModel.activeSymptoms.isEmpty {
                             FormSection("症狀統計") {
                                 ForEach(viewModel.activeSymptoms, id: \.0) { symptom, count in
@@ -131,40 +165,6 @@ struct StatsView: View {
                                 ForEach(viewModel.activeDiningTypes, id: \.0) { type, count in
                                     StatRow(label: type.rawValue, count: count, total: total)
                                 }
-                            }
-                        }
-
-                        if let worst = viewModel.worstDay {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text("最嚴重的一天")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(Color.easeTextSecondary)
-                                    .tracking(0.8)
-
-                                Button {
-                                    viewModel.worstDaySheet = viewModel.worstDay
-                                } label: {
-                                    HStack(alignment: .center) {
-                                        VStack(alignment: .leading, spacing: 6) {
-                                            Text(worst.date, format: .dateTime.month(.wide).day().weekday(.wide))
-                                                .font(.title3.weight(.semibold))
-                                                .foregroundStyle(Color.easeTextPrimary)
-                                            HStack(spacing: 12) {
-                                                Label("\(worst.records.count) 筆", systemImage: "note.text")
-                                                Label("嚴重度 \(worst.records.flatMap(\.symptoms).map(\.weight).reduce(0, +))",
-                                                      systemImage: "waveform.path.ecg")
-                                            }
-                                            .font(.caption)
-                                            .foregroundStyle(Color.easeTextSecondary)
-                                        }
-                                        Spacer()
-                                        Image(systemName: "waveform.path.ecg").font(.system(size: 40)).foregroundStyle(Color.easeSymptom)
-                                    }
-                                    .padding(16)
-                                    .background(Color.easeSymptom.opacity(0.08))
-                                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                                }
-                                .buttonStyle(.plain)
                             }
                         }
                     }
@@ -225,7 +225,7 @@ struct StatRow: View {
             }
             .frame(height: 6)
         }
-        .padding(.vertical, 7)
+        .padding(.vertical, 8)
     }
 }
 
