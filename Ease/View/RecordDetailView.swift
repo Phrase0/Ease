@@ -44,12 +44,7 @@ struct RecordDetailView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
                 // Symptoms
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("症狀")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color.easeTextSecondary)
-                        .tracking(0.8)
-
+                FormSection("症狀") {
                     if currentRecord.symptoms.isEmpty {
                         Text("無症狀")
                             .font(.callout)
@@ -67,39 +62,21 @@ struct RecordDetailView: View {
                         }
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(16)
-                .background(Color.easeCard)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
 
                 // Eating Habits
                 if !currentRecord.eatingHabits.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("進食習慣")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.easeTextSecondary)
-                            .tracking(0.8)
-
+                    FormSection("進食習慣") {
                         TagPillRow(
                             tags: currentRecord.eatingHabits.map(\.rawValue),
                             foreground: .white,
                             background: Color.easeAccent
                         )
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(16)
-                    .background(Color.easeCard)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
 
                 // Food
                 if !currentRecord.foodTags.isEmpty || !currentRecord.note.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("吃了什麼")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.easeTextSecondary)
-                            .tracking(0.8)
-
+                    FormSection("吃了什麼") {
                         if !currentRecord.foodTags.isEmpty {
                             TagPillRow(
                                 tags: currentRecord.foodTags.map(\.rawValue),
@@ -107,27 +84,17 @@ struct RecordDetailView: View {
                                 background: Color.easeAccent
                             )
                         }
-
                         if !currentRecord.note.isEmpty {
                             Text(currentRecord.note)
                                 .font(.subheadline)
                                 .foregroundStyle(Color.easeTextPrimary)
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(16)
-                    .background(Color.easeCard)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
 
                 // Dining Type
                 if let diningType = currentRecord.diningType {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("用餐方式")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.easeTextSecondary)
-                            .tracking(0.8)
-
+                    FormSection("用餐方式") {
                         HStack(spacing: 4) {
                             Image(systemName: "bag")
                                 .font(.caption)
@@ -136,27 +103,15 @@ struct RecordDetailView: View {
                         }
                         .foregroundStyle(Color.easeTextPrimary)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(16)
-                    .background(Color.easeCard)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
 
-                // Additional notes
+                // Additional Notes
                 if let note = currentRecord.additionalNote, !note.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("備註")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.easeTextSecondary)
-                            .tracking(0.8)
+                    FormSection("備註") {
                         Text(note)
                             .font(.subheadline)
                             .foregroundStyle(Color.easeTextPrimary)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(16)
-                    .background(Color.easeCard)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
             }
             .padding(16)

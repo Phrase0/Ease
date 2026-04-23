@@ -95,7 +95,7 @@ struct StatsView: View {
                         let total = viewModel.filteredRecords.count
 
                         if !viewModel.activeSymptoms.isEmpty {
-                            statsCard("症狀統計") {
+                            FormSection("症狀統計") {
                                 ForEach(viewModel.activeSymptoms, id: \.0) { symptom, count in
                                     StatRow(label: symptom.rawValue, count: count, total: total)
                                 }
@@ -103,7 +103,7 @@ struct StatsView: View {
                         }
 
                         if !viewModel.activeEatingHabits.isEmpty {
-                            statsCard("進食習慣") {
+                            FormSection("進食習慣") {
                                 ForEach(viewModel.activeEatingHabits, id: \.0) { habit, count in
                                     StatRow(label: habit.rawValue, count: count, total: total)
                                 }
@@ -111,7 +111,7 @@ struct StatsView: View {
                         }
 
                         if !viewModel.activeMealTypes.isEmpty {
-                            statsCard("餐種分析") {
+                            FormSection("餐種分析") {
                                 ForEach(viewModel.activeMealTypes, id: \.0) { type, count in
                                     StatRow(label: type.rawValue, count: count, total: total)
                                 }
@@ -119,7 +119,7 @@ struct StatsView: View {
                         }
 
                         if !viewModel.activeFoodTags.isEmpty {
-                            statsCard("吃了什麼") {
+                            FormSection("吃了什麼") {
                                 ForEach(viewModel.activeFoodTags, id: \.0) { tag, count in
                                     StatRow(label: tag.rawValue, count: count, total: total)
                                 }
@@ -127,7 +127,7 @@ struct StatsView: View {
                         }
 
                         if !viewModel.activeDiningTypes.isEmpty {
-                            statsCard("用餐方式") {
+                            FormSection("用餐方式") {
                                 ForEach(viewModel.activeDiningTypes, id: \.0) { type, count in
                                     StatRow(label: type.rawValue, count: count, total: total)
                                 }
@@ -188,21 +188,6 @@ struct StatsView: View {
         .onChange(of: viewModel.customEnd)     { viewModel.updateFilter(from: store.records) }
     }
 
-    @ViewBuilder
-    private func statsCard<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Color.easeTextSecondary)
-                .tracking(0.8)
-                .padding(.bottom, 12)
-            content()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(Color.easeCard)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-    }
 }
 
 // MARK: - Stat Row
