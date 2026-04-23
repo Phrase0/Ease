@@ -37,6 +37,11 @@ struct StatsView: View {
                             .clipShape(Capsule())
                         }
                         Spacer()
+                        if !viewModel.filteredRecords.isEmpty {
+                            Text("共 \(viewModel.filteredRecords.count) 筆紀錄")
+                                .font(.caption)
+                                .foregroundStyle(Color.easeTextSecondary)
+                        }
                     }
 
                     if viewModel.selectedRange == .custom {
@@ -88,22 +93,18 @@ struct StatsView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.top, 60)
                     } else {
-                        Text("共 \(viewModel.filteredRecords.count) 筆紀錄")
-                            .font(.caption)
-                            .foregroundStyle(Color.easeTextSecondary)
-
                         let total = viewModel.filteredRecords.count
 
-                        if let worst = viewModel.worstDay {
-                            VStack(alignment: .leading, spacing: 12) {
-                                Text("最嚴重的一天")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(Color.easeTextSecondary)
-                                    .tracking(0.8)
-
-                                Button {
-                                    viewModel.worstDaySheet = viewModel.worstDay
-                                } label: {
+                        VStack(alignment: .leading, spacing: 12) {
+                            if let worst = viewModel.worstDay {
+                            Button {
+                                viewModel.worstDaySheet = viewModel.worstDay
+                            } label: {
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text("最嚴重的一天")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(Color.easeSymptom)
+                                        .tracking(0.8)
                                     HStack(alignment: .center) {
                                         VStack(alignment: .leading, spacing: 6) {
                                             Text(worst.date, format: .dateTime.month(.wide).day().weekday(.wide))
@@ -118,14 +119,17 @@ struct StatsView: View {
                                             .foregroundStyle(Color.easeTextSecondary)
                                         }
                                         Spacer()
-                                        Image(systemName: "waveform.path.ecg").font(.system(size: 40)).foregroundStyle(Color.easeSymptom)
+                                        Image(systemName: "waveform.path.ecg")
+                                            .font(.system(size: 40))
+                                            .foregroundStyle(Color.easeSymptom)
                                     }
-                                    .padding(16)
-                                    .background(Color.easeSymptom.opacity(0.08))
-                                    .clipShape(RoundedRectangle(cornerRadius: 14))
                                 }
-                                .buttonStyle(.plain)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(16)
+                                .background(Color.easeSymptom.opacity(0.08))
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
                             }
+                            .buttonStyle(.plain)
                         }
 
                         if !viewModel.activeSymptoms.isEmpty {
@@ -167,6 +171,8 @@ struct StatsView: View {
                                 }
                             }
                         }
+                        }
+                        .padding(.top, 8)
                     }
                 }
                 .padding(16)
