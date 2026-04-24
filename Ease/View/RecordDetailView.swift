@@ -89,6 +89,7 @@ struct RecordDetailView: View {
                                 .font(.subheadline)
                                 .foregroundStyle(Color.easeTextPrimary)
                                 .padding(.leading, 2)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                 }
@@ -114,6 +115,7 @@ struct RecordDetailView: View {
                         Text(note)
                             .font(.subheadline)
                             .foregroundStyle(Color.easeTextPrimary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
