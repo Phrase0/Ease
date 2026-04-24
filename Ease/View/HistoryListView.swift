@@ -31,7 +31,7 @@ struct HistoryListView: View {
                         }
                     }
                 }
-                .sheet(isPresented: $showingNewRecord) { RecordView() }
+                .sheet(isPresented: $showingNewRecord) { AddRecordView() }
                 .navigationDestination(for: MealRecord.self) { record in
                     RecordDetailView(record: record)
                 }

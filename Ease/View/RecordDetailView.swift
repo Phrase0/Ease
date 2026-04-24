@@ -88,6 +88,7 @@ struct RecordDetailView: View {
                             Text(currentRecord.note)
                                 .font(.subheadline)
                                 .foregroundStyle(Color.easeTextPrimary)
+                                .padding(.leading, 2)
                         }
                     }
                 }
@@ -132,7 +133,7 @@ struct RecordDetailView: View {
             }
         }
         .sheet(item: $editingRecord) { rec in
-            RecordView(existingRecord: rec)
+            AddRecordView(existingRecord: rec)
         }
     }
 }

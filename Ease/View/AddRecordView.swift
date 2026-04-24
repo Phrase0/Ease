@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RecordView: View {
+struct AddRecordView: View {
     let existingRecord: MealRecord?
     @EnvironmentObject private var store: RecordStore
     @StateObject private var viewModel: RecordFormViewModel
@@ -102,7 +102,7 @@ struct RecordView: View {
 
                         Divider().overlay(Color.easeDivider).padding(.top, 4)
 
-                        TextField("備註（例：咖啡、炸雞、泡麵）", text: $viewModel.foodNote)
+                        TextField("備註（例：咖啡、炸雞、泡麵）", text: $viewModel.foodNote, axis: .vertical)
                             .font(.subheadline)
                             .foregroundStyle(Color.easeTextPrimary)
                             .tint(Color.easeAccent)
@@ -161,11 +161,11 @@ struct RecordView: View {
 }
 
 #Preview("新增") {
-    RecordView()
+    AddRecordView()
         .environmentObject(RecordStore())
 }
 
 #Preview("編輯") {
-    RecordView(existingRecord: mockRecords[0])
+    AddRecordView(existingRecord: mockRecords[0])
         .environmentObject(RecordStore())
 }
