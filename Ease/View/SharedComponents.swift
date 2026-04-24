@@ -16,7 +16,8 @@ extension Color {
     static let easeTextPrimary   = Color(red: 0.192, green: 0.157, blue: 0.125) // warm dark brown 主要文字（暖深棕）
     static let easeTextSecondary = Color(red: 0.510, green: 0.459, blue: 0.408) // medium warm brown 次要文字（中等暖棕）
     static let easeSymptom       = Color(red: 0.671, green: 0.416, blue: 0.329) // deep brick-red 症狀色（深磚紅）
-    static let easeHealthy       = Color(red: 0.725, green: 0.725, blue: 0.616) // muted sage green 健康色（鼠尾草綠）
+    static let easeHealthy       = Color(red: 0.761, green: 0.757, blue: 0.502) // muted sage green 健康色（鼠尾草綠）
+    
     static let easeDivider       = Color(red: 0.871, green: 0.847, blue: 0.816) // warm divider 分隔線（暖灰色）
 }
 
