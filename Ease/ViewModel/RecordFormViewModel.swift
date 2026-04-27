@@ -54,14 +54,15 @@ class RecordFormViewModel: ObservableObject {
     }
 
     func save(to store: RecordStore) {
+        let isFasting = selectedMealType == .fasting
         let record = MealRecord(
             id: existingRecord?.id ?? UUID(),
             date: date,
             mealType: selectedMealType,
-            foodTags: FoodTag.allCases.filter { selectedFoodTags.contains($0) },
-            note: foodNote,
-            diningType: selectedDiningType,
-            eatingHabits: EatingHabit.allCases.filter { selectedEatingHabits.contains($0) },
+            foodTags: isFasting ? [] : FoodTag.allCases.filter { selectedFoodTags.contains($0) },
+            note: isFasting ? "" : foodNote,
+            diningType: isFasting ? nil : selectedDiningType,
+            eatingHabits: isFasting ? [] : EatingHabit.allCases.filter { selectedEatingHabits.contains($0) },
             symptoms: Symptom.allCases.filter { selectedSymptoms.contains($0) },
             otherSymptom: otherSymptomText.isEmpty ? nil : otherSymptomText,
             additionalNote: additionalNote.isEmpty ? nil : additionalNote
