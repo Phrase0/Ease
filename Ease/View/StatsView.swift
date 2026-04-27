@@ -216,7 +216,7 @@ struct StatsView: View {
                 }
             }
             .sheet(item: $viewModel.worstDaySheet) { item in
-                WorstDayDetailView(date: item.date, records: item.records)
+                WorstDayDetailView(date: item.date)
             }
             .shareSheet(
                 isPresented: $showingShareSheet,
