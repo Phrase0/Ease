@@ -59,6 +59,7 @@ struct RecordDetailView: View {
                             Text("其他：\(other)")
                                 .font(.footnote)
                                 .foregroundStyle(Color.easeTextSecondary)
+                                .padding(.leading, 3)
                         }
                     }
                 }
@@ -88,7 +89,7 @@ struct RecordDetailView: View {
                             Text(currentRecord.note)
                                 .font(.subheadline)
                                 .foregroundStyle(Color.easeTextPrimary)
-                                .padding(.leading, 2)
+                                .padding(.leading, 3)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
