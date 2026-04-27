@@ -51,22 +51,26 @@ enum DiningType: String, CaseIterable, Hashable, Codable {
 
 enum Symptom: String, CaseIterable, Hashable, Codable {
     case bloating = "脹氣"
+    case stomachache = "胃痛"
+    case diarrhea = "腹瀉"
     case burping = "打飽嗝"
     case hiccup = "打嗝"
     case nausea = "噁心"
     case acidReflux = "泛酸"
     case vomiting = "嘔吐"
     case other = "其他"
-
+    
     var weight: Int {
         switch self {
-        case .bloating:   return 1
-        case .burping:    return 1
-        case .hiccup:     return 2
-        case .nausea:     return 3
-        case .acidReflux: return 2
-        case .vomiting:   return 5
-        case .other:      return 1
+        case .bloating:     return 1
+        case .stomachache:  return 3
+        case .diarrhea:     return 2
+        case .burping:      return 1
+        case .hiccup:       return 2
+        case .nausea:       return 3
+        case .acidReflux:   return 2
+        case .vomiting:     return 5
+        case .other:        return 1
         }
     }
 }
@@ -84,7 +88,7 @@ struct MealRecord: Identifiable, Equatable, Hashable, Codable {
     let symptoms: [Symptom]
     let otherSymptom: String?
     let additionalNote: String?
-
+    
     init(
         id: UUID = UUID(),
         date: Date,
@@ -108,23 +112,23 @@ struct MealRecord: Identifiable, Equatable, Hashable, Codable {
         self.otherSymptom = otherSymptom
         self.additionalNote = additionalNote
     }
-
+    
     var hasSymptoms: Bool { !symptoms.isEmpty }
-
+    
     var displayDate: String { date.formatted(date: .long, time: .omitted) }
     var displayTime: String {
         let f = DateFormatter()
         f.dateFormat = "hh:mm"
         return f.string(from: date)
     }
-
+    
     var displayAmPm: String {
         let f = DateFormatter()
         f.dateFormat = "a"
         f.locale = Locale(identifier: "en_US")
         return f.string(from: date)
     }
-
+    
     var foodSummary: String {
         var parts: [String] = []
         if !foodTags.isEmpty {
