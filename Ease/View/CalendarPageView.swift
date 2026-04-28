@@ -208,7 +208,7 @@ struct DayCell: View {
                 .background(
                     Circle().fill(
                         isSelected ? Color.easeAccent :
-                        isToday    ? Color.easeAccent.opacity(0.18) :
+                        isToday    ? Color.easeAccentToday :
                         Color.clear
                     )
                 )
@@ -265,8 +265,8 @@ struct MonthYearPickerSheet: View {
                     if let date = calendar.date(from: c) { onSelect(date) }
                     dismiss()
                 }
-                .foregroundStyle(Color.easeAccent)
                 .fontWeight(.semibold)
+                .foregroundStyle(Color.easeAccent)
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)

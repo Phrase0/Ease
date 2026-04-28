@@ -9,8 +9,14 @@ import SwiftUI
 
 struct WorstDayDetailView: View {
     let date: Date
-    let records: [MealRecord]
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var store: RecordStore
+
+    private var records: [MealRecord] {
+        store.records
+            .filter { Calendar.current.isDate($0.date, inSameDayAs: date) }
+            .sorted { $0.date < $1.date }
+    }
 
     var body: some View {
         NavigationStack {
@@ -43,6 +49,6 @@ struct WorstDayDetailView: View {
 }
 
 #Preview {
-    WorstDayDetailView(date: mockRecords[0].date, records: Array(mockRecords.prefix(3)))
+    WorstDayDetailView(date: mockRecords[0].date)
         .environmentObject(RecordStore())
 }

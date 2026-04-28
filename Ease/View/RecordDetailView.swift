@@ -26,7 +26,7 @@ struct RecordDetailView: View {
                         .font(.title3.weight(.semibold))
                         .foregroundStyle(Color.easeTextPrimary)
                     Text("\(currentRecord.displayTime) \(currentRecord.displayAmPm)")
-                        .font(.callout.monospacedDigit())
+                        .font(.subheadline.monospacedDigit())
                         .foregroundStyle(Color.easeTextSecondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -35,9 +35,8 @@ struct RecordDetailView: View {
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
-                        .background(Color.easeAccent.opacity(0.12))
                         .foregroundStyle(Color.easeAccent)
-                        .clipShape(Capsule())
+                        .overlay(Capsule().stroke(Color.easeAccent, lineWidth: 1))
                 }
                 .padding(16)
                 .background(Color.easeCard)
@@ -47,8 +46,8 @@ struct RecordDetailView: View {
                 FormSection("症狀") {
                     if currentRecord.symptoms.isEmpty {
                         Text("無症狀")
-                            .font(.callout)
-                            .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
+                            .font(.subheadline)
+                            .foregroundStyle(Color.easeTextTertiary)
                     } else {
                         TagPillRow(
                             tags: currentRecord.symptoms.map { $0.rawValue },
@@ -57,8 +56,9 @@ struct RecordDetailView: View {
                         )
                         if let other = currentRecord.otherSymptom, !other.isEmpty {
                             Text("其他：\(other)")
-                                .font(.footnote)
+                                .font(.caption)
                                 .foregroundStyle(Color.easeTextSecondary)
+                                .padding(.leading, 3)
                         }
                     }
                 }
@@ -88,6 +88,8 @@ struct RecordDetailView: View {
                             Text(currentRecord.note)
                                 .font(.subheadline)
                                 .foregroundStyle(Color.easeTextPrimary)
+                                .padding(.leading, 3)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                 }
@@ -99,7 +101,7 @@ struct RecordDetailView: View {
                             Image(systemName: "fork.knife")
                                 .font(.caption)
                                 .foregroundStyle(Color.easeAccent)
-                                .padding(.leading, 2)
+//                                .padding(.leading, 2)
                             Text(diningType.rawValue)
                                 .font(.subheadline)
                         }
@@ -113,6 +115,7 @@ struct RecordDetailView: View {
                         Text(note)
                             .font(.subheadline)
                             .foregroundStyle(Color.easeTextPrimary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
@@ -132,7 +135,7 @@ struct RecordDetailView: View {
             }
         }
         .sheet(item: $editingRecord) { rec in
-            RecordView(existingRecord: rec)
+            AddRecordView(existingRecord: rec)
         }
     }
 }

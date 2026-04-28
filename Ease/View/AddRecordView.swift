@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RecordView: View {
+struct AddRecordView: View {
     let existingRecord: MealRecord?
     @EnvironmentObject private var store: RecordStore
     @StateObject private var viewModel: RecordFormViewModel
@@ -81,43 +81,45 @@ struct RecordView: View {
                         }
                     }
 
-                    // MARK: Eating Habits
-                    FormSection("進食習慣") {
-                        EqualTagGrid(
-                            items: EatingHabit.allCases,
-                            label: \.rawValue,
-                            isSelected: { viewModel.selectedEatingHabits.contains($0) },
-                            onTap: { viewModel.toggleEatingHabit($0) }
-                        )
-                    }
+                    if viewModel.selectedMealType != .fasting {
+                        // MARK: Eating Habits
+                        FormSection("進食習慣") {
+                            EqualTagGrid(
+                                items: EatingHabit.allCases,
+                                label: \.rawValue,
+                                isSelected: { viewModel.selectedEatingHabits.contains($0) },
+                                onTap: { viewModel.toggleEatingHabit($0) }
+                            )
+                        }
 
-                    // MARK: Food Tags
-                    FormSection("吃了什麼") {
-                        EqualTagGrid(
-                            items: FoodTag.allCases,
-                            label: \.rawValue,
-                            isSelected: { viewModel.selectedFoodTags.contains($0) },
-                            onTap: { viewModel.toggleFoodTag($0) }
-                        )
+                        // MARK: Food Tags
+                        FormSection("吃了什麼") {
+                            EqualTagGrid(
+                                items: FoodTag.allCases,
+                                label: \.rawValue,
+                                isSelected: { viewModel.selectedFoodTags.contains($0) },
+                                onTap: { viewModel.toggleFoodTag($0) }
+                            )
 
-                        Divider().overlay(Color.easeDivider).padding(.top, 4)
+                            Divider().overlay(Color.easeDivider).padding(.top, 4)
 
-                        TextField("備註（例：咖啡、炸雞、泡麵）", text: $viewModel.foodNote)
-                            .font(.subheadline)
-                            .foregroundStyle(Color.easeTextPrimary)
-                            .tint(Color.easeAccent)
-                    }
+                            TextField("備註（例：咖啡、炸雞、泡麵）", text: $viewModel.foodNote, axis: .vertical)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.easeTextPrimary)
+                                .tint(Color.easeAccent)
+                        }
 
-                    // MARK: Dining Type
-                    FormSection("用餐方式") {
-                        EqualTagGrid(
-                            items: DiningType.allCases,
-                            label: \.rawValue,
-                            isSelected: { viewModel.selectedDiningType == $0 },
-                            onTap: { type in
-                                viewModel.selectedDiningType = viewModel.selectedDiningType == type ? nil : type
-                            }
-                        )
+                        // MARK: Dining Type
+                        FormSection("用餐方式") {
+                            EqualTagGrid(
+                                items: DiningType.allCases,
+                                label: \.rawValue,
+                                isSelected: { viewModel.selectedDiningType == $0 },
+                                onTap: { type in
+                                    viewModel.selectedDiningType = viewModel.selectedDiningType == type ? nil : type
+                                }
+                            )
+                        }
                     }
 
                     // MARK: Additional Notes
@@ -152,8 +154,8 @@ struct RecordView: View {
                         viewModel.save(to: store)
                         dismiss()
                     }
-                    .foregroundStyle(Color.easeAccent)
                     .fontWeight(.semibold)
+                    .foregroundStyle(Color.easeAccent)
                 }
             }
         }
@@ -161,11 +163,11 @@ struct RecordView: View {
 }
 
 #Preview("新增") {
-    RecordView()
+    AddRecordView()
         .environmentObject(RecordStore())
 }
 
 #Preview("編輯") {
-    RecordView(existingRecord: mockRecords[0])
+    AddRecordView(existingRecord: mockRecords[0])
         .environmentObject(RecordStore())
 }
