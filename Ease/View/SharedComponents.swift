@@ -225,15 +225,15 @@ struct RecordRowView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 // Row 1: meal type + dining type
-                HStack(spacing: 6) {
+                HStack(spacing: 4) {
                     Text(record.mealType.rawValue)
                         .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
                         .foregroundStyle(Color.easeAccent)
-                        .overlay(Capsule().stroke(Color.easeAccent, lineWidth: 1))
 
                     if let diningType = record.diningType {
+                        Text("·")
+                            .font(.caption)
+                            .foregroundStyle(Color.easeTextTertiary)
                         Text(diningType.rawValue)
                             .font(.caption)
                             .foregroundStyle(Color.easeTextSecondary)
@@ -252,19 +252,17 @@ struct RecordRowView: View {
                                 .foregroundStyle(Color.easeTextSecondary)
                         }
                     }
-                    .padding(.leading, 3)
                 } else {
                     Text("無症狀")
                         .font(.subheadline)
                         .foregroundStyle(Color.easeTextTertiary)
-                        .padding(.leading, 3)
                 }
 
                 // Row 3: food — supporting info with +N
                 if !visibleFoodText.isEmpty {
                     HStack(alignment: .firstTextBaseline, spacing: 0) {
                         Text(visibleFoodText)
-                            .font(.caption)
+                            .font(.caption2)
                             .foregroundStyle(Color.easeTextSecondary)
                             .lineLimit(1)
                         if extraFoodCount > 0 {
@@ -273,7 +271,6 @@ struct RecordRowView: View {
                                 .foregroundStyle(Color.easeTextTertiary)
                         }
                     }
-                    .padding(.leading, 3)
                 }
             }
 
