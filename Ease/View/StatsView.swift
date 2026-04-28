@@ -31,10 +31,10 @@ struct StatsView: View {
                                     .font(.caption.weight(.medium))
                             }
                             .frame(minWidth: 100)
-                            .foregroundStyle(Color.easeAccent)
+                            .foregroundStyle(Color.easeSymptom)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(Color.easeAccent.opacity(0.1))
+                            .background(Color.easeSymptomSubtle)
                             .clipShape(Capsule())
                         }
                         Spacer()
@@ -131,7 +131,7 @@ struct StatsView: View {
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
-                                    .background(Color.easeSymptom.opacity(0.08))
+                                    .background(Color.easeSymptomSubtle)
                                     .clipShape(RoundedRectangle(cornerRadius: 14))
                                 }
                                 .buttonStyle(.plain)

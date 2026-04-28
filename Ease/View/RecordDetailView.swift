@@ -35,9 +35,8 @@ struct RecordDetailView: View {
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
-                        .background(Color.easeAccent.opacity(0.12))
                         .foregroundStyle(Color.easeAccent)
-                        .clipShape(Capsule())
+                        .overlay(Capsule().stroke(Color.easeAccent, lineWidth: 1))
                 }
                 .padding(16)
                 .background(Color.easeCard)
@@ -48,7 +47,7 @@ struct RecordDetailView: View {
                     if currentRecord.symptoms.isEmpty {
                         Text("無症狀")
                             .font(.subheadline)
-                            .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
+                            .foregroundStyle(Color.easeTextTertiary)
                     } else {
                         TagPillRow(
                             tags: currentRecord.symptoms.map { $0.rawValue },
@@ -102,7 +101,7 @@ struct RecordDetailView: View {
                             Image(systemName: "fork.knife")
                                 .font(.caption)
                                 .foregroundStyle(Color.easeAccent)
-                                .padding(.leading, 2)
+//                                .padding(.leading, 2)
                             Text(diningType.rawValue)
                                 .font(.subheadline)
                         }

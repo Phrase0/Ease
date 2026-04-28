@@ -10,15 +10,26 @@ import SwiftUI
 // MARK: - Color Tokens
 
 extension Color {
-    static let easeBg            = Color(red: 0.953, green: 0.937, blue: 0.914) // warm cream 溫暖的米色背景
-    static let easeCard          = Color(red: 0.984, green: 0.973, blue: 0.959) // lighter warm white 較淺的暖白色（卡片用）
-    static let easeAccent        = Color(red: 0.800, green: 0.490, blue: 0.278) // terracotta 陶土色（重點色）
-    static let easeTextPrimary   = Color(red: 0.192, green: 0.157, blue: 0.125) // warm dark brown 主要文字（暖深棕）
-    static let easeTextSecondary = Color(red: 0.510, green: 0.459, blue: 0.408) // medium warm brown 次要文字（中等暖棕）
-    static let easeSymptom       = Color(red: 0.671, green: 0.416, blue: 0.329) // deep brick-red 症狀色（深磚紅）
-    static let easeHealthy       = Color(red: 0.761, green: 0.757, blue: 0.502) // muted sage green 健康色（鼠尾草綠）
-    
-    static let easeDivider       = Color(red: 0.871, green: 0.847, blue: 0.816) // warm divider 分隔線（暖灰色）
+    // 底面色
+    static let easeBg            = Color(red: 243/255, green: 239/255, blue: 233/255) // #F3EFE9 暖奶油米白，頁面背景
+    static let easeCard          = Color(red: 251/255, green: 248/255, blue: 245/255) // #FBF8F5 比背景略白，卡片背景
+    static let easeAccent        = Color(red: 204/255, green: 125/255, blue:  71/255) // #CC7D47 暖橘棕，主要強調色
+    static let easeAccentSubtle  = Color(red: 237/255, green: 222/255, blue: 209/255) // #EDDED1 accent 15% 疊背景，chip 填色 / 日曆今日圈
+    static let easeAccentToday   = easeAccentSubtle
+
+    // 文字色
+    static let easeTextPrimary   = Color(red:  49/255, green:  40/255, blue:  32/255) // #312820 暖深褐，主要文字，非純黑
+    static let easeTextSecondary = Color(red: 130/255, green: 117/255, blue: 104/255) // #827568 中暖棕，次要文字
+    static let easeTextTertiary  = Color(red: 190/255, green: 183/255, blue: 174/255) // #BEB7AE 淡化次要文字，如「無症狀」
+    static let easeTextHint      = Color(red: 164/255, green: 153/255, blue: 143/255) // #A4998F 提示說明文字
+
+    // 症狀色
+    static let easeSymptom       = Color(red: 171/255, green: 106/255, blue:  84/255) // #AB6A54 暖磚玫瑰，症狀強調色
+    static let easeSymptomSubtle = Color(red: 237/255, green: 228/255, blue: 221/255) // #EDE4DD 症狀卡片底色
+
+    // 其他
+    static let easeHealthy       = Color(red: 126/255, green: 137/255, blue: 107/255) // #7E896B 鼠尾草綠，無症狀日曆點
+    static let easeDivider       = Color(red: 222/255, green: 216/255, blue: 208/255) // #DED8D0 暖分隔線
 }
 
 // MARK: - Tag Button Style
@@ -60,10 +71,15 @@ struct FormSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let title = title {
-                Text(title)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Color.easeTextSecondary)
-                    .tracking(0.8)
+                HStack(spacing: 5) {
+                    Circle()
+                        .fill(Color.easeAccent)
+                        .frame(width: 5, height: 5)
+                    Text(title)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.easeTextSecondary)
+                        .tracking(0.8)
+                }
             }
             content
         }
@@ -214,9 +230,8 @@ struct RecordRowView: View {
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(Color.easeAccent.opacity(0.12))
                         .foregroundStyle(Color.easeAccent)
-                        .clipShape(Capsule())
+                        .overlay(Capsule().stroke(Color.easeAccent, lineWidth: 1))
 
                     if let diningType = record.diningType {
                         Text(diningType.rawValue)
@@ -241,7 +256,7 @@ struct RecordRowView: View {
                 } else {
                     Text("無症狀")
                         .font(.subheadline)
-                        .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
+                        .foregroundStyle(Color.easeTextTertiary)
                         .padding(.leading, 3)
                 }
 
@@ -255,7 +270,7 @@ struct RecordRowView: View {
                         if extraFoodCount > 0 {
                             Text(" +\(extraFoodCount)")
                                 .font(.caption2)
-                                .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
+                                .foregroundStyle(Color.easeTextTertiary)
                         }
                     }
                     .padding(.leading, 3)

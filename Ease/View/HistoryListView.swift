@@ -64,7 +64,7 @@ struct HistoryListView: View {
                         .foregroundStyle(Color.easeTextSecondary)
                     Text("請按右上角 + 新增")
                         .font(.caption)
-                        .foregroundStyle(Color.easeTextSecondary.opacity(0.7))
+                        .foregroundStyle(Color.easeTextHint)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {

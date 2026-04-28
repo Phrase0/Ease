@@ -154,8 +154,8 @@ struct AddRecordView: View {
                         viewModel.save(to: store)
                         dismiss()
                     }
-                    .foregroundStyle(Color.easeAccent)
                     .fontWeight(.semibold)
+                    .foregroundStyle(Color.easeAccent)
                 }
             }
         }
