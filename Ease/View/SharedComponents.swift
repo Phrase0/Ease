@@ -241,7 +241,7 @@ struct RecordRowView: View {
                 } else {
                     Text("無症狀")
                         .font(.subheadline)
-                        .foregroundStyle(Color.easeTextSecondary.opacity(0.45))
+                        .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
                         .padding(.leading, 3)
                 }
 
@@ -255,7 +255,7 @@ struct RecordRowView: View {
                         if extraFoodCount > 0 {
                             Text(" +\(extraFoodCount)")
                                 .font(.caption2)
-                                .foregroundStyle(Color.easeTextSecondary.opacity(0.6))
+                                .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
                         }
                     }
                     .padding(.leading, 3)

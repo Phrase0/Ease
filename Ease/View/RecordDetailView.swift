@@ -26,7 +26,7 @@ struct RecordDetailView: View {
                         .font(.title3.weight(.semibold))
                         .foregroundStyle(Color.easeTextPrimary)
                     Text("\(currentRecord.displayTime) \(currentRecord.displayAmPm)")
-                        .font(.callout.monospacedDigit())
+                        .font(.subheadline.monospacedDigit())
                         .foregroundStyle(Color.easeTextSecondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -47,7 +47,7 @@ struct RecordDetailView: View {
                 FormSection("症狀") {
                     if currentRecord.symptoms.isEmpty {
                         Text("無症狀")
-                            .font(.callout)
+                            .font(.subheadline)
                             .foregroundStyle(Color.easeTextSecondary.opacity(0.5))
                     } else {
                         TagPillRow(
@@ -57,7 +57,7 @@ struct RecordDetailView: View {
                         )
                         if let other = currentRecord.otherSymptom, !other.isEmpty {
                             Text("其他：\(other)")
-                                .font(.footnote)
+                                .font(.caption)
                                 .foregroundStyle(Color.easeTextSecondary)
                                 .padding(.leading, 3)
                         }
