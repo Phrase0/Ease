@@ -17,29 +17,41 @@ enum MealType: String, CaseIterable, Hashable, Codable {
     case afternoonTea = "下午茶"
     case dinner = "晚餐"
     case lateNight = "宵夜"
-    case drink = "飲料"
+    case drink = "飲品"
+    case dessert = "甜點"
 }
 
 enum FoodTag: String, CaseIterable, Hashable, Codable {
-    case rice = "飯類"
-    case noodle = "麵類"
-    case bread = "麵包"
-    case sweet = "甜食"
-    case coffee = "咖啡"
-    case bubbleTea = "手搖飲"
-    case carbonated = "碳酸"
-    case alcohol = "酒精"
-    case highCalorie = "高熱量"
-    case heavyOil = "重油"
-    case heavySalty = "重鹹"
-    case spicy = "辣"
+    // --- 基礎架構 ---
+    case grains = "澱粉"       // 飯、麵、地瓜、土司
+    case protein = "肉魚蛋"    // 各類蛋白質
+    case vegetable = "蔬菜"    // 葉菜、根莖類
+    
+    // --- 烹調與調味 ---
+    case oily = "油膩"        // 油炸、肥肉、重油
+    case spicy = "辛辣"       // 辣椒、胡椒
+    case heavy = "重口味"      // 重鹹、勾芡、濃郁
+    
+    // --- 誘發物 ---
+    case acidic = "酸性食"     // 柑橘、番茄、醋、鳳梨
+    case herbs = "辛香料"      // 洋蔥、大蒜、薄荷
+    case alcohol = "酒精"      // 酒類
+    
+    // --- 烘焙與甜點 ---
+    case bread = "麵包"       // 烘焙、蛋糕、發酵麵點
+    case sweets = "甜食"       // 糖果、巧克力、甜點
+    case dairy = "奶類"       // 牛奶、起司、鮮奶油
+    
+    // --- 飲品 ---
+    case caffeine = "咖啡因"    // 咖啡、濃茶
+    case sugary = "含糖飲"     // 手搖、果汁
+    case bubbles = "氣泡飲"     // 可樂、汽水、氣泡水
 }
 
 enum EatingHabit: String, CaseIterable, Hashable, Codable {
     case eatTooFast = "吃太快"
     case talkingWhileEating = "一直說話"
     case sleepingOnStomach = "趴睡"
-    case noRestAfterMeal = "無休息"
     
 }
 
@@ -50,6 +62,10 @@ enum DiningType: String, CaseIterable, Hashable, Codable {
 }
 
 enum Symptom: String, CaseIterable, Hashable, Codable {
+    case heartburn = "火燒心"
+    case chestTightness = "胸悶"
+    case globusSensation = "喉球感"
+    case nightCough = "夜咳"
     case bloating = "脹氣"
     case stomachache = "胃痛"
     case diarrhea = "腹瀉"
@@ -62,15 +78,19 @@ enum Symptom: String, CaseIterable, Hashable, Codable {
     
     var weight: Int {
         switch self {
-        case .bloating:     return 1
-        case .stomachache:  return 3
-        case .diarrhea:     return 2
-        case .burping:      return 1
-        case .hiccup:       return 2
-        case .nausea:       return 3
-        case .acidReflux:   return 2
-        case .vomiting:     return 5
-        case .other:        return 1
+        case .heartburn:       return 5 // 核心典型症狀，代表強烈不適
+        case .chestTightness:  return 4 // 需警覺，有時與心血管混淆，心理壓力較大
+        case .globusSensation: return 3 // 慢性發炎指標，影響生活品質
+        case .nightCough:      return 4 // 影響睡眠品質，代表夜間逆流嚴重
+        case .bloating:        return 1 // 常見輕微不適
+        case .stomachache:     return 3 // 中度不適
+        case .diarrhea:        return 2 // 腸胃機能失調
+        case .burping:         return 1 // 常見輕微不適
+        case .hiccup:          return 2 // 神經或橫膈膜刺激
+        case .nausea:          return 3 // 中度不適
+        case .acidReflux:      return 3 // 典型症狀，代表胃酸已向上逆流
+        case .vomiting:        return 5 // 最嚴重的急性症狀
+        case .other:           return 1 // 基準分
         }
     }
 }
