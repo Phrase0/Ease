@@ -64,7 +64,7 @@ enum DiningType: String, CaseIterable, Hashable, Codable {
 enum Symptom: String, CaseIterable, Hashable, Codable {
     case heartburn = "火燒心"
     case chestTightness = "胸悶"
-    case globusSensation = "喉球感"
+    case globusSensation = "喉嚨卡"
     case nightCough = "夜咳"
     case bloating = "脹氣"
     case stomachache = "胃痛"
