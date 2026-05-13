@@ -1,0 +1,36 @@
+//
+//  EaseApp.swift
+//  Ease
+//
+//  Created by Peiyun Wu on 2026/4/17.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    var body: some View {
+        TabView {
+            HistoryListView()
+                .tabItem {
+                    Label("紀錄", systemImage: "list.bullet")
+                }
+
+            CalendarPageView()
+                .tabItem {
+                    Label("日曆", systemImage: "calendar")
+                }
+
+            StatsView()
+                .tabItem {
+                    Label("分析", systemImage: "chart.bar")
+                }
+        }
+        .tint(Color.easeAccent)
+    }
+}
+
+#Preview {
+    ContentView()
+        .environmentObject(RecordStore())
+}
+
